@@ -13,9 +13,8 @@ import javax.validation.Payload;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = (NumeroMesaValidator.class))
-public @interface ValidatePlatoPedidoDisponible {
-	String message() default "Faltan ingredientes de este plato, no se puede servir";
+public @interface NumeroMesaConstraint {
+	String message() default "El número de mesa debe estar entre 1 y 20";
 	Class<?>[] groups() default {};
 	Class<? extends Payload>[] payload() default {};
-
 }
