@@ -9,10 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Manager;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
 import org.springframework.samples.petclinic.service.ManagerService;
+import org.springframework.samples.petclinic.validators.ManagerValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +35,11 @@ public class ManagerController {
 		super();
 		this.managerService = managerService;
 		this.authoritiesService = authoritiesService;
+	}
+	
+	@InitBinder("manager")
+	public void initManagerBinder(WebDataBinder dataBinder) {
+		dataBinder.setValidator(new ManagerValidator(this.authoritiesService));
 	}
 
 	@GetMapping()
@@ -62,9 +70,6 @@ public class ManagerController {
 			log.info(String.format("Manager with name %s wasn't able to be created", manager.getName()));
 			modelMap.addAttribute("manager", manager);
 			return "managers/editManager";
-		}else if (authoritiesService.findAllUsernames().contains(manager.getUsuario())) {
-			modelMap.addAttribute("message", "Este nombre de usuario ya está en uso");
-			vista = crearManager(modelMap);
 		}else {
 			managerService.save(manager);
 			modelMap.addAttribute("message", "Guardado Correctamente");
@@ -98,16 +103,15 @@ public class ManagerController {
 	}
 	@PostMapping(value = "/edit")
 	public String processUpdateManagerForm(@Valid Manager manager, BindingResult result,ModelMap modelMap) {
+		if(this.managerService.managerConMismoUsuario(manager)) {
+			result = this.managerService.erroresSinMismoUser(manager, result);
+		}
 		if(result.hasErrors()) {
 			modelMap.addAttribute("manager", manager);
 			log.info(String.format("Manager with name %s and ID %d wasn't able to be updated", manager.getName(), manager.getId()));
 			return "managers/editarManager";
-		}else if (authoritiesService.findAllUsernames().contains(manager.getUsuario())
-				&& !managerService.findById(manager.getId()).get().getUsuario().equals(manager.getUsuario())) {
-			modelMap.addAttribute("message", "Este nombre de usuario ya está en uso");
-			return initUpdateManagerForm(manager.getId(),modelMap);
 		}else {
-		this.managerService.save(manager);
+			this.managerService.save(manager);
 			return "redirect:/managers";
 		}
 	}
