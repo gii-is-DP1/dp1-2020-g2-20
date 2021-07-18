@@ -32,7 +32,7 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 @WebMvcTest(controllers = CamareroController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
-public class CamareroControllerTest {
+public class CamareroControllerTests {
 
 	private static final int TEST_CAMARERO_ID = 1;
 
@@ -56,7 +56,7 @@ public class CamareroControllerTest {
 		camarero.setName("aaaass");
 		camarero.setTelefono("123456789");
 		camarero.setUsuario("jose");
-		given(this.camareroService.findCamareroById(TEST_CAMARERO_ID)).willReturn(camarero);
+		given(this.camareroService.findById(TEST_CAMARERO_ID).get()).willReturn(camarero);
 
 	}
 
@@ -104,14 +104,5 @@ public class CamareroControllerTest {
 		.andExpect(view().name("camareros/editCamarero"));
 
 	}
-	
-	/*
-	 * @WithMockUser(value = "spring")
-	 * 
-	 * @Test void initDeleteCamarero() throws Exception {
-	 * mockMvc.perform(get("/camareros/delete/"+TEST_CAMARERO_ID)).andExpect(status(
-	 * ).is3xxRedirection()).andExpect(view().name(
-	 * "redirect:/camareros/listaCamareros")); }
-	 */
 
 }

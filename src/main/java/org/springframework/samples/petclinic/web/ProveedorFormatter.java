@@ -12,12 +12,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ProveedorFormatter implements Formatter<Proveedor>{
-	
+	@Autowired
 	private ProveedorService proveedorService;
 	
-	@Autowired
-	public ProveedorFormatter(ProveedorService prodService) {
-		this.proveedorService = prodService;
+	public ProveedorFormatter(ProveedorService proveedorService) {
+		super();
+		this.proveedorService = proveedorService;
 	}
 
 	@Override

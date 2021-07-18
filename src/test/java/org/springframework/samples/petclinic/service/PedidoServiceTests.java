@@ -1,8 +1,5 @@
 package org.springframework.samples.petclinic.service;
 
-
-
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import java.util.logging.Level;
@@ -22,11 +19,9 @@ import org.springframework.samples.petclinic.model.Producto;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedPedidoException;
 import org.springframework.stereotype.Service;
 
-
-
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 
-public class PedidoServiceTest {
+public class PedidoServiceTests {
 
 	@Autowired
 	private ProveedorService proveedorService;
@@ -34,10 +29,13 @@ public class PedidoServiceTest {
 	@Autowired
 	private ProductoService productoService;
 	
+	@Autowired
+	private PedidoService pedidoService;
+	
 	//FindPedidoByProveedorID
 	@Test
 	public void findPedidoByProveedorId() {
-		Iterable<Pedido> test = this.proveedorService.findPedidoByProveedorId(1);
+		Iterable<Pedido> test = this.pedidoService.findByProveedorId(1);
 		Iterator<Pedido> it_test = test.iterator();
 		List<Pedido> aux = new ArrayList<Pedido>();
 		while (it_test.hasNext()) {
@@ -58,40 +56,40 @@ public class PedidoServiceTest {
 	
 	@Test
 	public void guardarPedido() {
-		int found = proveedorService.Pedidocount();
+		int found = pedidoService.count();
 		
 		Pedido pedido = new Pedido();
 		pedido.setFechaPedido(LocalDate.now());
 		pedido.setHaLlegado(false);
-		pedido.setProveedor(proveedorService.provedroporid(3).get());
+		pedido.setProveedor(proveedorService.findById(3).get());
 		
 		try {
-			proveedorService.savePedido(pedido);
+			pedidoService.save(pedido);
 		} catch (DuplicatedPedidoException ex) {
-			Logger.getLogger(PedidoServiceTest.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(PedidoServiceTests.class.getName()).log(Level.SEVERE, null, ex);
 		}
       
-		int size = proveedorService.Pedidocount();
+		int size = pedidoService.count();
 		assertEquals(found+1, size);	
 	}
 	
 	
 	@Test
 	public void falloGuardarPedidoRepetido() {
-		int found = proveedorService.Pedidocount();
+		int found = pedidoService.count();
 		
 		Pedido pedido = new Pedido();
 		pedido.setFechaPedido(LocalDate.now());
 		pedido.setHaLlegado(false);
-		pedido.setProveedor(proveedorService.provedroporid(1).get());
+		pedido.setProveedor(proveedorService.findById(1).get());
 		
 		try {
-			proveedorService.savePedido(pedido);
+			pedidoService.save(pedido);
 		} catch (DuplicatedPedidoException ex) {
-			Logger.getLogger(PedidoServiceTest.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(PedidoServiceTests.class.getName()).log(Level.SEVERE, null, ex);
 		}
       
-		int size = proveedorService.Pedidocount();
+		int size = pedidoService.count();
 		assertEquals(found, size);
 	}
 	
@@ -99,8 +97,8 @@ public class PedidoServiceTest {
 	
 	@Test
 	public void listaDeProductosDeProveedor() {
-		Producto producto = productoService.buscaProductoPorId(1).get();
-		Collection<Producto> aux = proveedorService.encontrarProductoProveedor(producto);
+		Producto producto = productoService.findById(1).get();
+		Collection<Producto> aux = productoService.findByProveedor(producto);
 		int size = aux.size();
 		assertEquals(size, 7);
 	}
@@ -108,7 +106,7 @@ public class PedidoServiceTest {
 	
 	@Test
 	public void testprueba() {
-		Optional<Pedido> test = this.proveedorService.pedidoPorId(1);
+		Optional<Pedido> test = this.pedidoService.findById(1);
 		assertEquals("1", test.get().getId().toString());
 		assertEquals(false, test.get().getHaLlegado());
 		assertEquals("Makro", test.get().getProveedor().getName());		

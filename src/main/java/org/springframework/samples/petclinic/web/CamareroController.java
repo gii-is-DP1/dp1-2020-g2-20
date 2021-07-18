@@ -25,12 +25,16 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping(value = "/camareros")
 public class CamareroController {
-	
 	@Autowired
 	private CamareroService camareroService;
 	@Autowired
 	private AuthoritiesService authoritiesService;
 	
+	public CamareroController(CamareroService camareroService, AuthoritiesService authoritiesService) {
+		super();
+		this.camareroService = camareroService;
+		this.authoritiesService = authoritiesService;
+	}
 	
 	@InitBinder("camarero")
 	public void initCamareroBinder(WebDataBinder dataBinder) {
@@ -40,7 +44,7 @@ public class CamareroController {
 	@GetMapping()
 	public String listadoCamareros(ModelMap modelMap) {
 		String vista= "camareros/listaCamareros";
-		Iterable<Camarero> camareros=  camareroService.camareroList();
+		Iterable<Camarero> camareros=  camareroService.findAll();
 		Iterator<Camarero> it_camareros = camareros.iterator();
 		if (!(it_camareros.hasNext())) {
 			modelMap.addAttribute("message", "No hay camareros, contrata a alguien y crea su Ficha de Empleado");
@@ -58,14 +62,14 @@ public class CamareroController {
 	}
 	
 	@PostMapping(path="/save")
-	public String guardarCamarero(@Valid Camarero camarero,BindingResult result,ModelMap modelMap) {
+	public String save(@Valid Camarero camarero,BindingResult result,ModelMap modelMap) {
 		String vista= "camareros/listaCamareros";
 		if(result.hasErrors()) {
 			log.info(String.format("Waiter with name %s wasn't able to be created", camarero.getName(), camarero.getId()));
 			modelMap.addAttribute("camarero", camarero);
 			return "camareros/editCamarero";
 		}else {
-			camareroService.guardarCamarero(camarero);
+			camareroService.save(camarero);
 			modelMap.addAttribute("message", "Guardado correctamente");
 			vista=listadoCamareros(modelMap);
 		}
@@ -77,7 +81,7 @@ public class CamareroController {
 		String vista= "camareros/listaCamareros";
 		Optional<Camarero> cam= camareroService.findById(camareroId);
 		if(cam.isPresent()) {
-			camareroService.borrarCamarero(camareroId);
+			camareroService.deleteById(camareroId);
 			modelMap.addAttribute("message", "Borrado correctamente");
 			vista=listadoCamareros(modelMap);
 		}else {
@@ -106,7 +110,7 @@ public class CamareroController {
 			modelMap.addAttribute("camarero", camarero);
 			return "camareros/editarCamareros";
 		}else {
-			camareroService.guardarCamarero(camarero);
+			camareroService.save(camarero);
 		return "redirect:/camareros";
 		}
 	}

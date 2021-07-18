@@ -14,7 +14,7 @@ import org.springframework.samples.petclinic.model.Plato;
 import org.springframework.samples.petclinic.model.Producto;
 import org.springframework.samples.petclinic.service.IngredienteService;
 import org.springframework.samples.petclinic.service.PlatoService;
-
+import org.springframework.samples.petclinic.service.ProductoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -24,21 +24,27 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 @RequestMapping(value = "/platos")
 public class PlatoController {
-
 	@Autowired
 	private PlatoService platoService;
-	
 	@Autowired
-	private IngredienteService ingService;
+	private IngredienteService ingredienteService;
+	@Autowired
+	private ProductoService productoService;
 	
-	
+	public PlatoController(PlatoService platoService, IngredienteService ingredienteService,
+			ProductoService productoService) {
+		super();
+		this.platoService = platoService;
+		this.ingredienteService = ingredienteService;
+		this.productoService = productoService;
+	}
+
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
 		dataBinder.setDisallowedFields("id");
@@ -47,7 +53,7 @@ public class PlatoController {
 	@GetMapping()
 	public String listadoPlatos(ModelMap modelMap) {
 		String vista= "platos/listaPlatos";
-		Iterable<Plato> platos=  platoService.platoList();
+		Iterable<Plato> platos=  platoService.findAll();
 		modelMap.addAttribute("platos",platos);
 		return vista;
 		
@@ -69,7 +75,7 @@ public class PlatoController {
 			modelMap.addAttribute("platos", plato);
 			return "platos/editPlatos";
 		}else {
-			platoService.guardarPlato(plato);
+			platoService.save(plato);
 			modelMap.addAttribute("message", "Guardado Correctamente");
 			vista=listadoPlatos(modelMap);
 		}
@@ -79,9 +85,9 @@ public class PlatoController {
 	@GetMapping(path="/delete/{platoId}")
 	public String borrarPlato(@PathVariable("platoId") int platoId, ModelMap modelMap) {
 		String vista= "platos/listaPlatos";
-		Optional<Plato> cam= platoService.buscaPlatoPorId(platoId);
+		Optional<Plato> cam= platoService.findById(platoId);
 		if(cam.isPresent()) {
-			platoService.borrarPlato(platoId);
+			platoService.deleteById(platoId);
 			modelMap.addAttribute("message", "Borrado Correctamente");
 			vista=listadoPlatos(modelMap);
 		}else {
@@ -96,7 +102,7 @@ public class PlatoController {
 	public String initUpdatePlatoForm(@PathVariable("platoId") int platoId, ModelMap model) {
 		String vista= "platos/editarPlatos";
 		
-			Plato plato =  platoService.buscaPlatoPorId(platoId).get();
+			Plato plato =  platoService.findById(platoId).get();
 			model.addAttribute(plato);
 			return vista;
 	}
@@ -109,16 +115,16 @@ public class PlatoController {
 			modelMap.addAttribute("plato", plato);
 			return vista;
 		}else {
-			this.platoService.guardarPlato(plato);
+			this.platoService.save(plato);
 			return "redirect:/platos";
 		}	
 	}
 	
 	@GetMapping("/{platoId}")
 	public String showPlato(@PathVariable("platoId") int platoId, ModelMap model) {
-		Plato plato= platoService.buscaPlatoPorId(platoId).get();
+		Plato plato= platoService.findById(platoId).get();
 		model.addAttribute("plato", plato);
-		List<Ingrediente> ls= platoService.ingredientePorPlato(platoId);
+		List<Ingrediente> ls= ingredienteService.findByPlatoId(platoId);
 		model.addAttribute("ingredientes", ls);
 		return "platos/platosDetails";
 		
@@ -127,8 +133,8 @@ public class PlatoController {
 	@GetMapping(path="/{platoId}/ingrediente/new")
 	public String crearIngrediente(ModelMap modelMap, @PathVariable("platoId") int platoId) {
 		String vista= "platos/newIngredientes";
-		Collection<Producto> listaProd= ingService.encontrarProductos();
-		Plato plato=  platoService.buscaPlatoPorId(platoId).get();
+		Collection<Producto> listaProd= (Collection<Producto>) productoService.findAll();
+		Plato plato=  platoService.findById(platoId).get();
 		Ingrediente ing=new Ingrediente();
 		
 		
@@ -141,18 +147,17 @@ public class PlatoController {
 	
 	@PostMapping(path="/ingSave/{platoId}")
 	public String processCreationForm(@Valid Ingrediente ingrediente,BindingResult result,@PathVariable("platoId") int platoId, ModelMap model) throws ParseException {	
-		Plato pl= this.platoService.buscaPlatoPorId(platoId).get();
+		Plato pl= this.platoService.findById(platoId).get();
 		ingrediente.setPlato(pl);
 		if (result.hasErrors()) {
 			model.put("ingrediente", ingrediente);
 			return "platos/newIngredientes";
 		}else {
-            if(this.platoService.ingEstaRepetido(ingrediente.getProducto().getName(), platoId)) {
+            if(this.platoService.ingredienteEstaRepetido(ingrediente.getProducto().getName(), platoId)) {
             	model.put("message", "el ingrediente esta repetido");
             	return "redirect:/platos/"+platoId;
             }else {
-//              res.setPlato(platoFormatter.parse(ingrediente.getPlatoaux(),Locale.ENGLISH));
-    			this.ingService.guardarIngrediente(ingrediente);                
+    			this.ingredienteService.save(ingrediente);                
     			return "redirect:/platos/"+platoId;
             }
 			
@@ -161,10 +166,10 @@ public class PlatoController {
 	
 	@GetMapping(path="/deleteIng/{ingId}")
 	public String borrarIngredienteDePlato(@PathVariable("ingId") int ingId, ModelMap modelMap) {
-		Optional<Ingrediente> ing= ingService.buscaIngPorId(ingId);
+		Optional<Ingrediente> ing= ingredienteService.findById(ingId);
 		Integer platoId= ing.get().getPlato().getId();
 		if(ing.isPresent()) {
-			ingService.borrarIngrediente(ingId);
+			ingredienteService.deleteById(ingId);
 			modelMap.addAttribute("message", "Borrado Correctamente");
 		}else {
 			modelMap.addAttribute("message", "Ingrediente no encontrado");

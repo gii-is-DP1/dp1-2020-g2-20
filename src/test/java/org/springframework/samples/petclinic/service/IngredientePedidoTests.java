@@ -16,7 +16,6 @@
 package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 import javax.transaction.Transactional;
 
@@ -30,8 +29,6 @@ import org.springframework.samples.petclinic.model.PlatoPedido;
 import org.springframework.samples.petclinic.model.Producto;
 import org.springframework.stereotype.Service;
 
-
-
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 class IngredientePedidoTests {        
 	@Autowired
@@ -40,11 +37,9 @@ class IngredientePedidoTests {
 	@Autowired
     protected IngredienteService ingredienteService;
          
-	
-	
 	@Test
 	@Transactional
-	public void guardarIngredientePedido() {
+	public void save() {
 		Ingrediente in = new Ingrediente();
 		Producto p = new Producto();
 		p.setCantAct(5.0);
@@ -55,7 +50,7 @@ class IngredientePedidoTests {
 		i.setIngrediente(in);
 		i.setPp(new PlatoPedido());
 		
-		IngredientePedido ingrediente = ingredientePedidoService.guardarIngredientePedido(i);
+		IngredientePedido ingrediente = ingredientePedidoService.save(i);
 		
 		assertThat(ingrediente.getId()).isEqualTo(1);
 	}

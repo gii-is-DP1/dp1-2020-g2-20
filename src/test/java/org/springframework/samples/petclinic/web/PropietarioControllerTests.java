@@ -5,11 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.configuration.SecurityConfiguration;
 import org.springframework.samples.petclinic.model.Propietario;
-import org.springframework.samples.petclinic.model.Proveedor;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -17,7 +14,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
 import org.springframework.samples.petclinic.service.PropietarioService;
-import org.springframework.samples.petclinic.service.ProveedorService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -68,19 +64,19 @@ class PropietarioControllerTests {
 		Iterable<Propietario> l= listaProp;
 		
 		
-		given(this.propietarioService.buscaPropietarioPorId(TEST_PROPIETARIO_ID)).willReturn(Optional.of(propietario));
+		given(this.propietarioService.findById(TEST_PROPIETARIO_ID)).willReturn(Optional.of(propietario));
 		
-		given(this.propietarioService.guardarPropietario(propietario))
+		given(this.propietarioService.save(propietario))
 		.willReturn(propietario);
 	
-		given(this.propietarioService.listPropietario()).willReturn(l);
+		given(this.propietarioService.findAll()).willReturn(l);
 		
-		given(this.propietarioService.propietarioCount()).willReturn(1);
+		given(this.propietarioService.count()).willReturn(1);
 	}
 	@WithMockUser(value = "spring")
     @Test
     void testListadoPropietariosVacia() throws Exception {
-		given(this.propietarioService.propietarioCount()).willReturn(0);
+		given(this.propietarioService.count()).willReturn(0);
 		
 		
 	mockMvc.perform(get("/propietarios")).andExpect(status().isOk())

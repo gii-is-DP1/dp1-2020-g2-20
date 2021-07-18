@@ -1,7 +1,6 @@
 package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
@@ -22,25 +21,18 @@ import org.springframework.transaction.annotation.Transactional;
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 class CamareroServiceTests {
 	@Autowired
-	private CamareroService camSer;
-			
-	@Test
-	public void testCountWithInitialData() {
-		int count= camSer.camareroCount();
-		assertEquals(count,2);
-	}
-	
+	private CamareroService camareroService;
 	
 	  @Test
 	  void shouldDeleteCamarero() {
-	  Iterable<Camarero> it= camSer.camareroList();
+	  Iterable<Camarero> it= camareroService.findAll();
 	  List<Camarero> ls=Lists.newArrayList(it);
 	  int foundBefore = ls.size();
 	  
-	  Camarero cm = this.camSer.findById(1).get();
-	  this.camSer.borrarCamarero(cm.getId());	  
+	  Camarero cm = this.camareroService.findById(1).get();
+	  this.camareroService.deleteById(cm.getId());	  
 		
-		 List<Camarero> ls2=Lists.newArrayList(camSer.camareroList());
+		 List<Camarero> ls2=Lists.newArrayList(camareroService.findAll());
 		 
 	  int foundAfter = ls2.size();
 	  assertThat(foundBefore).isEqualTo(foundAfter+1);
@@ -50,7 +42,7 @@ class CamareroServiceTests {
 	  @Test
 	  @Transactional
 		public void shouldInsertCamarero() throws DuplicatedPedidoException {
-		  Iterable<Camarero> it= camSer.camareroList();
+		  Iterable<Camarero> it= camareroService.findAll();
 		  List<Camarero> ls=Lists.newArrayList(it);
 		  int before = ls.size();
 			
@@ -64,10 +56,10 @@ class CamareroServiceTests {
 	       cam.setTelefono("123456789");
 	   
 	                
-			this.camSer.guardarCamarero(cam);
+			this.camareroService.save(cam);
 			assertThat(cam.getId().longValue()).isNotEqualTo(0);
 
-			int after = Lists.newArrayList(camSer.camareroList()).size();
+			int after = Lists.newArrayList(camareroService.findAll()).size();
 			assertThat(before+1).isEqualTo(after);
 	 
 

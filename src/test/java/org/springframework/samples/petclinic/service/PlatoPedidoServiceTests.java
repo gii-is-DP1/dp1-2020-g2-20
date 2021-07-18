@@ -1,31 +1,22 @@
 package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThat;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import javax.transaction.Transactional;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.samples.petclinic.model.Ingrediente;
 import org.springframework.samples.petclinic.model.IngredientePedido;
-import org.springframework.samples.petclinic.model.Plato;
 import org.springframework.samples.petclinic.model.PlatoPedido;
-import org.springframework.samples.petclinic.model.Producto;
 import org.springframework.stereotype.Service;
 
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-public class PlatoPedidoServiceTest {
+public class PlatoPedidoServiceTests {
 
 	@Autowired
 	protected PlatoPedidoService platoPedidoService;
@@ -67,7 +58,7 @@ public class PlatoPedidoServiceTest {
 		ingredientePedido1.setPp(platoPedido);
 		ingredientePedido1.setCantidadPedida(2.0);
 		ingredientePedido1.setIngrediente(ingrediente1);
-		ingredientePedidoService.guardarIngredientePedido(ingredientePedido1);
+		ingredientePedidoService.save(ingredientePedido1);
 		}*/
 	
 	@Test
@@ -84,7 +75,7 @@ public class PlatoPedidoServiceTest {
 	@Transactional
 	void ingredientePedidoPorPlatoPedido() {
 		
-		Collection<IngredientePedido> res = platoPedidoService.ingredientePedidoPorPlatoPedido(1);
+		Collection<IngredientePedido> res = ingredientePedidoService.findByPlatoPedidoId(1);
 		Integer size = res.size();
 		assertThat(size).isEqualTo(5);
 		

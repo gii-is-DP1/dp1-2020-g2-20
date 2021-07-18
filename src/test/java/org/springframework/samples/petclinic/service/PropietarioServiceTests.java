@@ -18,21 +18,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PropietarioServiceTests {
 	
 	@Autowired
-	private PropietarioService proServi;
+	private PropietarioService propietarioService;
 	
 	@Autowired
-	protected PropietarioRepository pr;
+	protected PropietarioRepository propietarioRepository;
 			
 	@Test
 	public void testCountWithInitialData() {
-		int count= proServi.propietarioCount();
+		int count= propietarioService.count();
 		assertEquals(count,1);
 	}
 	
 	@Test
 	@Transactional
 	void shouldFindPropietario() {
-		java.util.Optional<Propietario> propietario = this.proServi.buscaPropietarioPorId(1);
+		java.util.Optional<Propietario> propietario = this.propietarioService.findById(1);
 		Propietario p= propietario.get();
 		assertThat(p.getName().equals("Abdel"));
 		assertThat(p.getApellido().equals("Ch"));
@@ -53,7 +53,7 @@ public class PropietarioServiceTests {
 		p.setContrasena("1234567");
 		p.setTelefono("602343454");
 		
-		this.pr.save(p);
+		this.propietarioRepository.save(p);
 		assertThat(p.getId()).isNotNull();
 		
 	}
@@ -69,7 +69,7 @@ public class PropietarioServiceTests {
 		p.setContrasena("1234567");
 		p.setTelefono("602343454");
 		assertThrows(ConstraintViolationException.class, () -> {
-			this.pr.save(p);
+			this.propietarioRepository.save(p);
 		});
 		
 		
@@ -85,7 +85,7 @@ public class PropietarioServiceTests {
 		p.setContrasena("1");
 		p.setTelefono("602343454");
 		assertThrows(ConstraintViolationException.class, () -> {
-			this.pr.save(p);
+			this.propietarioRepository.save(p);
 		});
 		
 		
@@ -97,7 +97,7 @@ public class PropietarioServiceTests {
 		String nombre = p.getName();
 		String n =nombre +"abi";
 		p.setName(n);
-		this.pr.save(p);
+		this.propietarioRepository.save(p);
 		assertThat(p.getName()).isEqualTo(n);
 	}
 }

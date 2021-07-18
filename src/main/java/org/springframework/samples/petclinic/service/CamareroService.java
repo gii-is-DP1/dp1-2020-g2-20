@@ -23,13 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 public class CamareroService {
 	@Autowired
 	private UserService userService;
-
 	@Autowired
 	private CamareroRepository camareroRepository;
-
 	@Autowired
 	private AuthoritiesService authoritiesService;
-
+	
 	public CamareroService(UserService userService, CamareroRepository camareroRepository,
 			AuthoritiesService authoritiesService) {
 		super();
@@ -39,18 +37,17 @@ public class CamareroService {
 	}
 
 	@Transactional
-	public int camareroCount() {
-		return (int) camareroRepository.count();
-	}
-
-	@Transactional
-	public Iterable<Camarero> camareroList() {
+	public Iterable<Camarero> findAll() {
 		return camareroRepository.findAll();
-
+	}
+	
+	@Transactional
+	public Optional<Camarero> findById(int camareroId) throws DataAccessException {
+		return this.camareroRepository.findById(camareroId);
 	}
 
 	@Transactional
-	public void guardarCamarero(Camarero camarero) {
+	public void save(Camarero camarero) {
 		User user = authoritiesService.crearUsuario(camarero.getUsuario(), camarero.getContrasena());
 		if(camarero.getId()!=null) {	
 			String antiguo = this.camareroRepository.findById(camarero.getId()).get().getUsuario();
@@ -66,17 +63,17 @@ public class CamareroService {
 	}
 
 	@Transactional
+
 	public void borrarCamarero(Integer id) {
-		Camarero camarero = camareroRepository.findCamareroById(id);
+    Camarero camarero = camareroRepository.findById(id).get();
 		this.userService.deleteUser(this.userService.findUser(camarero.getUsuario()).get());
 		camareroRepository.deleteById(id);
-		log.info(String.format("Waiter with username %s has been deleted", camarero.getUsuario(),
-				camarero.getId()));
+		log.info(String.format("Waiter with username %s has been deleted", camarero.getUsuario()));
 	}
 
 	// Se usa para asignar un camarero a una comanda dado su usario
 	@Transactional
-	public Camarero buscaCamareroPorUser(String user) {
+	public Camarero findByUser(String user) {
 		Camarero camarero = new Camarero();
 		Iterable<Camarero> aux = camareroRepository.findAll();
 		Iterator<Camarero> it = aux.iterator();
@@ -123,4 +120,5 @@ public class CamareroService {
 	        }
 			return result;
 	}
+
 }

@@ -24,25 +24,32 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping(value = "/propietarios")
 public class PropietarioController {
-
 	@Autowired
 	private PropietarioService propietarioService;
 	@Autowired
 	private AuthoritiesService authoritiesService;
 	
+  	public PropietarioController(PropietarioService propietarioService, AuthoritiesService authoritiesService) {
+		super();
+		this.propietarioService = propietarioService;
+		this.authoritiesService = authoritiesService;
+
+	}
+  
 	@InitBinder("propietario")
 	public void initPropietarioBinder(WebDataBinder dataBinder) {
 		dataBinder.setValidator(new PropietarioValidator(this.authoritiesService));
-	}
+
+
 
 	@GetMapping()
 	public String listadoPropietarios(ModelMap modelMap) {
 		String vista = "propietarios/listaPropietarios";
-		if(propietarioService.propietarioCount()==0) {
+		if(propietarioService.count()==0) {
 			modelMap.addAttribute("message", "la lista esta vacia");
 			return vista;
 		}else {
-			Iterable<Propietario> propietarios = propietarioService.listPropietario();
+			Iterable<Propietario> propietarios = propietarioService.findAll();
 			modelMap.addAttribute("propietarios", propietarios);
 			return vista;
 		}
@@ -66,7 +73,7 @@ public class PropietarioController {
 			modelMap.addAttribute("message", "Este nombre de usuario ya está en uso");
 			return crearPropietario(modelMap);
 		} else {
-			propietarioService.guardarPropietario(propietario);
+			propietarioService.save(propietario);
 			modelMap.addAttribute("message", "successfuly saved");
 			vista = listadoPropietarios(modelMap);
 		}
@@ -77,9 +84,9 @@ public class PropietarioController {
 	@GetMapping(path = "/delete/{propietarioId}")
 	public String borrarPropietario(@PathVariable("propietarioId") final int propietarioId, final ModelMap modelMap) {
 		// String vista= "propietarios/listaPropietarios";
-		Optional<Propietario> propietario = this.propietarioService.buscaPropietarioPorId(propietarioId);
+		Optional<Propietario> propietario = this.propietarioService.findById(propietarioId);
 		if (propietario.isPresent()) {
-			propietarioService.delete(propietario.get());
+			propietarioService.deleteById(propietario.get().getId());
 			modelMap.addAttribute("message", "successfuly deleted");
 		} else {
 			modelMap.addAttribute("message", "not found");
@@ -95,7 +102,7 @@ public class PropietarioController {
 
 		// if(username.equals(propietarioService.buscaPropietarioPorId(propietarioId).get().getName()))
 		// {
-		Propietario propietario = propietarioService.buscaPropietarioPorId(propietarioId).get();
+		Propietario propietario = propietarioService.findById(propietarioId).get();
 		model.addAttribute(propietario);
 		return vista;
 		/*
@@ -112,7 +119,8 @@ public class PropietarioController {
 			modelMap.addAttribute("propietario", propietario);
 			return "propietarios/editarPropietario";
 		} else {
-			this.propietarioService.guardarPropietario(propietario);
+			this.propietarioService.save(propietario);
+
 			return "redirect:/propietarios";
 		}
 	}

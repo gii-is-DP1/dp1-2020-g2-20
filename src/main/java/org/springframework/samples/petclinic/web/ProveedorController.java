@@ -15,16 +15,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 @RequestMapping("/proveedor")
 public class ProveedorController {
-
 	@Autowired
 	private ProveedorService proveedorService;
+	
+	public ProveedorController(ProveedorService proveedorService) {
+		super();
+		this.proveedorService = proveedorService;
+	}
 
 	@GetMapping()
 	public String listadoDeProveedores(ModelMap modelMap) {
@@ -60,7 +63,7 @@ public class ProveedorController {
 				modelMap.addAttribute("proveedor", proveedor);
 				return "proveedor/editProveedor";
 			} else {
-				Proveedor proveedorfinal = proveedorService.proverfindByName(proveedor.getName());
+				Proveedor proveedorfinal = proveedorService.findByName(proveedor.getName());
 				if (proveedorfinal != null) {
 					proveedorfinal.setActivo(true);
 					proveedorfinal.setGmail(proveedor.getGmail());
@@ -80,7 +83,7 @@ public class ProveedorController {
 	@GetMapping(path = "/delete/{proveedorid}")
 	public String borrarProveedor(@PathVariable("proveedorid") int proveedorid, ModelMap modelMap) {
 		String view = "proveedor/listadoDeProveedores";
-		Optional<Proveedor> proveedor = proveedorService.provedroporid(proveedorid);
+		Optional<Proveedor> proveedor = proveedorService.findById(proveedorid);
 		if (proveedor.isPresent()) {
 			Proveedor proveedorfinal = proveedor.get();
 			proveedorfinal.setActivo(false);
@@ -97,7 +100,7 @@ public class ProveedorController {
 	@GetMapping(value = "/edit/{proveedorId}")
 	public String initUpdateProveedorForm(@PathVariable("proveedorId") int proveedorId, ModelMap model) {
 		String vista = "proveedor/editarProveedor";
-		Proveedor proveedor = proveedorService.provedroporid(proveedorId).get();
+		Proveedor proveedor = proveedorService.findById(proveedorId).get();
 		model.addAttribute("proveedor", proveedor);
 		return vista;
 	}
@@ -109,8 +112,8 @@ public class ProveedorController {
 			modelMap.addAttribute("proveedor", proveedor);
 			return vista;
 		}else {
-			if (proveedorService.findNames().contains(proveedor.getName())
-					&& !proveedorService.provedroporid(proveedor.getId()).get().getName().equals(proveedor.getName())) {
+			if (proveedorService.findAllNames().contains(proveedor.getName())
+					&& !proveedorService.findById(proveedor.getId()).get().getName().equals(proveedor.getName())) {
 				modelMap.addAttribute("message", "El proveedor ya existe");
 				return initUpdateProveedorForm(proveedor.getId(),modelMap);
 			}
@@ -118,8 +121,7 @@ public class ProveedorController {
 			proveedor.setActivo(true);
 			this.proveedorService.save(proveedor);
 			return "redirect:/proveedor";
+			}
 		}
-	}
-}
-	
+	}	
 }

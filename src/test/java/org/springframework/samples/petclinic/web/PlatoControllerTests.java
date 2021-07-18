@@ -49,7 +49,7 @@ private static final int TEST_ING_ID = 1;
 private PlatoService platoService;
 
 @MockBean
-private IngredienteService ingService;
+private IngredienteService ingredienteService;
 
 
 @Autowired
@@ -83,15 +83,15 @@ void setup() {
 	plato.setDisponible(true);
 	plato.setIngredientes(null);
 	
-	given(this.platoService.buscaPlatoPorId(TEST_PLATO_ID)).willReturn(Optional.of(plato));
+	given(this.platoService.findById(TEST_PLATO_ID)).willReturn(Optional.of(plato));
 	
-	given(this.platoService.ingredientePorPlato(TEST_PLATO_ID)).willReturn(l);
+	given(this.ingredienteService.findByPlatoId(TEST_PLATO_ID)).willReturn(l);
 	
-	given(this.ingService.guardarIngrediente(ing)).willReturn(ing);
+	given(this.ingredienteService.save(ing)).willReturn(ing);
 	
-	given(this.platoService.ingEstaRepetido(any(String.class), any(Integer.class))).willReturn(false);
+	given(this.platoService.ingredienteEstaRepetido(any(String.class), any(Integer.class))).willReturn(false);
 	
-	given(this.ingService.buscaIngPorId(TEST_ING_ID)).willReturn(Optional.of(ing));
+	given(this.ingredienteService.findById(TEST_ING_ID)).willReturn(Optional.of(ing));
 	
 	
 }
@@ -196,7 +196,7 @@ void testPostProcessCreationIngForm() throws Exception {
 @WithMockUser(value = "spring")
 @Test
 void testPostProcessCreationIngFormIfRepetido() throws Exception {
-	given(this.platoService.ingEstaRepetido(any(String.class), any(Integer.class))).willReturn(true);
+	given(this.platoService.ingredienteEstaRepetido(any(String.class), any(Integer.class))).willReturn(true);
 	
 	mockMvc.perform(post("/platos/ingSave/{platoId}",TEST_PLATO_ID)
 						.with(csrf())

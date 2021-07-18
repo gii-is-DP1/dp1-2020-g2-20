@@ -9,23 +9,24 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-public class PlatoServiceTest {
+public class PlatoServiceTests {
 
 	@Autowired
 	private PlatoService platoService;
+	@Autowired
+	private IngredienteService ingredienteService;
 	
-	
-	//
+
 	@Test
 	public void ingredientePorPlatoTest() {	
-		assertEquals(platoService.ingredientePorPlato(2).size(), 2); 
+		assertEquals(ingredienteService.findByPlatoId(2).size(), 2); 
 	}
 	
 	//EsIgual
 		@Test
 		public void estaIngRepetidoTest() {		
-			assertEquals(platoService.ingEstaRepetido("Lechuga",2),false);
-			assertEquals(platoService.ingEstaRepetido("Mayonesa",2),false);
+			assertEquals(platoService.ingredienteEstaRepetido("Lechuga",2),false);
+			assertEquals(platoService.ingredienteEstaRepetido("Mayonesa",2),false);
 		}
 		
 	

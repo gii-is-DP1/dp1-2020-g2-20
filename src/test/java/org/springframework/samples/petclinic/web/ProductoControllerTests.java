@@ -27,6 +27,7 @@ import org.springframework.samples.petclinic.model.Producto;
 
 import org.springframework.samples.petclinic.model.Proveedor;
 import org.springframework.samples.petclinic.model.TipoProducto;
+import org.springframework.samples.petclinic.repository.LineaPedidoRepository;
 import org.springframework.samples.petclinic.service.ProductoService;
 import org.springframework.samples.petclinic.service.ProveedorService;
 import org.springframework.samples.petclinic.service.exceptions.PedidoPendienteException;
@@ -38,14 +39,16 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @WebMvcTest(controllers = ProductoController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
-public class ProductoControllerTest {
+public class ProductoControllerTests {
 
 	private static final int TEST_PRODUCTO_ID = 20;
 	private static final int TEST_LINEAPEDIDO_ID = 3;
 	private static final int TEST_PEDIDO_ID = 1;
 	private static final int TEST_PROVEEDOR_ID = 1;
 	private static final int TEST_TIPO_PRODUCTO_ID = 1;
-
+	
+	@MockBean
+	private LineaPedidoRepository lineaPedidoRepository;
 	@MockBean
 	private ProductoService productoService;
 	@MockBean
@@ -98,13 +101,13 @@ public class ProductoControllerTest {
 		producto.setCantMin(1.0);
 		producto.setName("producto_1");
 		producto.setLineasPedidas(lineas);
-		producto.setId(this.TEST_PRODUCTO_ID);
+		producto.setId(TEST_PRODUCTO_ID);
 		producto.setProveedor(proveedor);
 		producto.setTipoProducto(tipoproducto);
 
-		BDDMockito.given(this.productoService.buscaProductoPorId(TEST_PRODUCTO_ID)).willReturn(Optional.of(producto));
-		BDDMockito.given(this.proveedorService.findProveedorbyName("proveedor_1")).willReturn(this.proveedor);
-		BDDMockito.given(this.productoService.findLineaPedidoByProductoId(TEST_PRODUCTO_ID))
+		BDDMockito.given(this.productoService.findById(TEST_PRODUCTO_ID)).willReturn(Optional.of(producto));
+		BDDMockito.given(this.proveedorService.findByName("proveedor_1")).willReturn(this.proveedor);
+		BDDMockito.given(this.lineaPedidoRepository.findByProductoId(TEST_PRODUCTO_ID))
 				.willReturn(this.producto.getLineasPedidas());
 	}
 
@@ -122,7 +125,7 @@ public class ProductoControllerTest {
 	@Test
 	@DisplayName("Vista eliminar producto")
 	void initDeleteProducto() throws Exception {
-		BDDMockito.given(this.productoService.buscaProductoPorId(TEST_PRODUCTO_ID)).willReturn(Optional.of(producto));
+		BDDMockito.given(this.productoService.findById(TEST_PRODUCTO_ID)).willReturn(Optional.of(producto));
 		mockMvc.perform(get("/producto/delete/{productoId}", TEST_PRODUCTO_ID))
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MockMvcResultMatchers.model().attributeExists("producto"))

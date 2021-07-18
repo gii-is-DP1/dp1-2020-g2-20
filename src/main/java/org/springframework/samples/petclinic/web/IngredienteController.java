@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Ingrediente;
 import org.springframework.samples.petclinic.model.Producto;
 import org.springframework.samples.petclinic.service.IngredienteService;
+import org.springframework.samples.petclinic.service.ProductoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -24,18 +25,25 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping(value = "/ingrediente")
 public class IngredienteController {
-	
 	@Autowired
-	private IngredienteService ingService;
-	
+	private IngredienteService ingredienteService;
 	@Autowired
 	private ProductoFormatter productoFormatter;
+	@Autowired
+	private ProductoService productoService;
 	
+	public IngredienteController(IngredienteService ingredienteService, ProductoFormatter productoFormatter,
+			ProductoService productoService) {
+		super();
+		this.ingredienteService = ingredienteService;
+		this.productoFormatter = productoFormatter;
+		this.productoService = productoService;
+	}
 
 	@GetMapping()
 	public String listadoIngrediente(ModelMap modelMap) {
 		String vista= "ingrediente/listaIngredientes";
-		Iterable<Ingrediente> inglist = ingService.ingList();
+		Iterable<Ingrediente> inglist = ingredienteService.findAll();
 		modelMap.addAttribute("ingrediente",inglist);
 		return vista;	
 	}
@@ -43,7 +51,7 @@ public class IngredienteController {
 	@GetMapping(path="/new")
 	public String crearIngrediente(ModelMap modelMap) {
 		String vista= "ingrediente/newIngrediente";
-		Collection<Producto> listaProd= this.ingService.encontrarProductos();
+		Collection<Producto> listaProd= (Collection<Producto>) productoService.findAll();
 		modelMap.addAttribute("ingrediente",new Ingrediente());
 		modelMap.addAttribute("listaProductos", listaProd);
 		return vista;
@@ -58,7 +66,7 @@ public class IngredienteController {
 			log.info(String.format("Ingredient with name %s wasn't able to be created", ing.getProducto().getName()));
 			return "platosPedido/newPlatosPedido";
 		}else {
-			ingService.guardarIngrediente(ingFinal);
+			ingredienteService.save(ingFinal);
 			modelMap.addAttribute("message", "Guardado Correctamente");
 			vista=listadoIngrediente(modelMap);
 		}
@@ -68,9 +76,9 @@ public class IngredienteController {
 	@GetMapping(path="/delete/{ingId}")
 	public String borrarIngrediente(@PathVariable("ingId") int ingId, ModelMap modelMap) {
 		String vista= "ingrediente/listaIngredientes";
-		Optional<Ingrediente> pp= ingService.buscaIngPorId(ingId);
+		Optional<Ingrediente> pp= ingredienteService.findById(ingId);
 		if(pp.isPresent()) {
-			ingService.borrarIngrediente(ingId);
+			ingredienteService.deleteById(ingId);
 			modelMap.addAttribute("message", "Borrado Correctamente");
 			vista=listadoIngrediente(modelMap);
 		}else {

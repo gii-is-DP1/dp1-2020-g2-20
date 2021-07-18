@@ -76,11 +76,11 @@ public class ComandaController {
 		Optional<Comanda> comanda = comandaService.findById(comandaID);
 		if(comanda.isPresent()) {
 			Comanda res = comanda.get();
-				if(comandaService.estaFinalizado(res)) {
+			if(comandaService.estaFinalizado(res)) {
 					modelMap.addAttribute("message", "Esta comanda aún tiene platos por finalizar");
 					vista = listadoComandaActual(modelMap);
 					return vista;
-				}
+			}
 			if(res.getFechaFinalizado()==null) {
 				res.setFechaFinalizado(LocalDateTime.now());
 				modelMap.addAttribute("message", "La comanda se ha finalizado correctamente");
@@ -103,7 +103,6 @@ public class ComandaController {
 		Comanda comanda = comandaService.findById(comandaID).get();
 		Iterable<Plato> listaPlatos = platoService.findAllAvailable();
 		List<PlatoPedido> platosEC= (List<PlatoPedido>) comandaService.getPlatosPedidoDeComanda(comandaID);
-		
 		modelMap.addAttribute("platopedido",new PlatoPedidoDTO());
 		modelMap.addAttribute("platop",platosEC);
 		modelMap.addAttribute("comanda",comanda);
@@ -113,16 +112,11 @@ public class ComandaController {
 	
 	@GetMapping(path="/listaComandaActual/new")
     public String crearComanda(Integer mesa,ModelMap modelMap,Principal user) {
-//        if(mesa==null||mesa>20||mesa<1) {
-//            return "redirect:/comanda/listaComandaActual";
-//        }
-//        else {
         Comanda comanda = comandaService.crearComanda(mesa, user);
         int comandaId = comandaService.findLastId();
         modelMap.addAttribute("comanda", comanda);
         return "redirect:/comanda/listaComandaActual/"+comandaId;
-      
-//        }
+        }
     }
 	
 	
@@ -134,8 +128,8 @@ public class ComandaController {
 			modelMap.addAttribute("message", "Ha habido un error al guardar, No se han seleccionado ingredientes");
 			vista = "redirect:/platopedido/comanda/"+comandaId+"/"+ppId;
 		}else {
-		comandaService.anadirComandaAPlato(plato, comandaId);
-		vista= "redirect:/comanda/listaComandaActual/"+comandaId;
+			comandaService.anadirComandaAPlato(plato, comandaId);
+			vista= "redirect:/comanda/listaComandaActual/"+comandaId;
 		}
 		return vista; 
 	}

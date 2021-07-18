@@ -1,11 +1,8 @@
 package org.springframework.samples.petclinic.service;
 
-
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +30,7 @@ public class ProveedorServiceTests {
 	//FindProveedorByName
 	@Test
 	public void esBuscarProveedor() {
-		Proveedor test = proveedorService.findProveedorbyName("Makro");
+		Proveedor test = proveedorService.findByName("Makro");
 		assertEquals("Makro", test.getName());
 	}
 	
@@ -65,7 +62,7 @@ public class ProveedorServiceTests {
 	
 	@Test
 	public void findProveedorByNameTest() {	
-		int id=proveedorService.findProveedorbyName("Makro").getId();
+		int id=proveedorService.findByName("Makro").getId();
 		assertEquals(id, 1);
 		
 	}

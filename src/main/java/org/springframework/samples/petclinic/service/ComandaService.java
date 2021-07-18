@@ -20,19 +20,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class ComandaService {
-
 	@Autowired
 	private ComandaRepository comandaRepository;
-
 	@Autowired
 	private PlatoPedidoService platoPedidoService;
-
 	@Autowired
 	private CamareroService camareroService;
-
-
-
-	public ComandaService(ComandaRepository comandaRepository, PlatoPedidoService platoPedidoService, CamareroService camareroService) {
+	
+	public ComandaService(ComandaRepository comandaRepository, PlatoPedidoService platoPedidoService,
+			CamareroService camareroService) {
 		super();
 		this.comandaRepository = comandaRepository;
 		this.platoPedidoService = platoPedidoService;
@@ -42,6 +38,7 @@ public class ComandaService {
 	@Transactional
 	public int comandaCount() {
 		return (int) comandaRepository.count();	
+
 	}
 
 	@Transactional
@@ -49,16 +46,21 @@ public class ComandaService {
 		Iterable<Comanda> res = comandaRepository.findAll();
 		return res;
 	}
-
-	@Transactional
-	public Comanda guardarComanda(Comanda comanda) {
-		log.info(String.format("Order to table  %d has been saved", comanda.getMesa()));
-		return comandaRepository.save(comanda);
-	}
-
+	
 	@Transactional
 	public Optional<Comanda> findById(Integer id) {
 		return comandaRepository.findById(id);
+	}
+	
+	@Transactional
+	public int count() {
+		return (int) comandaRepository.count();	
+	}
+
+	@Transactional
+	public Comanda save(Comanda comanda) {
+		log.info(String.format("Order to table  %d has been saved", comanda.getMesa()));
+		return comandaRepository.save(comanda);
 	}
 
 	@Transactional
@@ -101,11 +103,10 @@ public class ComandaService {
 		comanda.setMesa(mesa);
 		comanda.setFechaCreado(LocalDateTime.now());
 		comanda.setPrecioTotal(0.0);
-		comanda.setCamarero(camareroService.buscaCamareroPorUser(user.getName()));
-		this.guardarComanda(comanda);
+		comanda.setCamarero(camareroService.findByUser(user.getName()));
+		this.save(comanda);
 		return comanda;
 	}
-
 
 	@Transactional
 	public Collection<PlatoPedido> getPlatosPedidoDeComanda(int comandaID){
@@ -127,7 +128,7 @@ public class ComandaService {
 		Comanda comanda = this.findById(comandaId).get();
 		plato.setComanda(comanda);
 		comanda.setPrecioTotal(comanda.getPrecioTotal()+plato.getPlato().getPrecio());
-		platoPedidoService.guardarPP(plato);
+		platoPedidoService.save(plato);
 	}
 
 	@Transactional

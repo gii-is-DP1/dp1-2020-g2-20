@@ -55,8 +55,7 @@
    			<th>Nombre del plato</th>
    			<th>Mesa</th>		
    			<th>Cambiar Estado</th>
-   			<th>Acciones</th>	
-   			<th></th>
+   			<th>Acciones</th>
         </tr>
         </thead>
         <tbody>

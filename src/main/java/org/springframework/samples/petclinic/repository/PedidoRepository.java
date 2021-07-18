@@ -5,5 +5,6 @@ import org.springframework.samples.petclinic.model.Pedido;
 
 public interface PedidoRepository extends CrudRepository<Pedido, Integer>{
 
-	Iterable<Pedido> findByProveedorId(Integer proveedorID);
+	Iterable<Pedido> findByProveedorId(Integer proveedorId);
+	
 }

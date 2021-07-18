@@ -134,27 +134,27 @@ INSERT INTO platopedido(id,comanda_id,estadoplato,plato_id) VALUES (6,2,3,11);
 --INGREDIENTES PEDIDOS--
 				--COMANDA 1--
 							--Solomillo al roque (3)--
-INSERT INTO ingediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (7 , 1.0 , 1);
-INSERT INTO ingediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (8 , 0.5 , 1);
-INSERT INTO ingediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (9 , 1.0 , 1);
-INSERT INTO ingediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (10, 0.2 , 1);
-INSERT INTO ingediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (11, 0.01, 1);
+INSERT INTO ingrediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (7 , 1.0 , 1);
+INSERT INTO ingrediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (8 , 0.5 , 1);
+INSERT INTO ingrediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (9 , 1.0 , 1);
+INSERT INTO ingrediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (10, 0.2 , 1);
+INSERT INTO ingrediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (11, 0.01, 1);
 							--Tortilla de patatas (5)--
-INSERT INTO ingediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (16 , 3.0 , 2);
-INSERT INTO ingediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (17 , 0.25, 2);
-INSERT INTO ingediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (18 , 0.02, 2);
+INSERT INTO ingrediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (16 , 3.0 , 2);
+INSERT INTO ingrediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (17 , 0.25, 2);
+INSERT INTO ingrediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (18 , 0.02, 2);
 							--Pepsi (8)--
-INSERT INTO ingediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (24 , 1.0 , 3);
+INSERT INTO ingrediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (24 , 1.0 , 3);
 				--COMANDA 2--
 							--Albóndigas (1)--
-INSERT INTO ingediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (1 , 0.5 , 4);
-INSERT INTO ingediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (2 , 0.25, 4);
-INSERT INTO ingediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (3 , 1.0 , 4);
-INSERT INTO ingediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (4 , 0.01, 4);
+INSERT INTO ingrediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (1 , 0.5 , 4);
+INSERT INTO ingrediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (2 , 0.25, 4);
+INSERT INTO ingrediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (3 , 1.0 , 4);
+INSERT INTO ingrediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (4 , 0.01, 4);
 							--Lipton (10)--
-INSERT INTO ingediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (26 , 1.0 , 5);
+INSERT INTO ingrediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (26 , 1.0 , 5);
 							--Cesta de pan (11)--
-INSERT INTO ingediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (27 , 1.0 , 6);
+INSERT INTO ingrediente_pedido(ingrediente_id,cant_pedida,pp_id) VALUES (27 , 1.0 , 6);
 
 --PEDIDO--
 INSERT INTO pedido(id,fechapedido,hallegado,proveedor_id) VALUES (1, '2021-02-04', FALSE, 1);

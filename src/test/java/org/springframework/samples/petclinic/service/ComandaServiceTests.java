@@ -49,10 +49,10 @@ class ComandaServiceTests {
 				camarero.setTelefono("654654659");
 				camarero.setUsuario("TestComanda1");
 				camarero.setContrasena("12345");
-				camareroService.guardarCamarero(camarero);
+				camareroService.save(camarero);
 		comanda.setCamarero(camarero);
               
-		comandaService.guardarComanda(comanda);
+		comandaService.save(comanda);
 		assertThat(comanda.getId().longValue()).isNotEqualTo(0);
 
 		comandas = comandaService.encontrarComandaDia(LocalDate.now().toString());
@@ -77,10 +77,10 @@ class ComandaServiceTests {
 				camarero.setTelefono("683683683");
 				camarero.setUsuario("TestComanda2");
 				camarero.setContrasena("12345");
-				camareroService.guardarCamarero(camarero);
+				camareroService.save(camarero);
 		comanda.setCamarero(camarero);
               
-		comandaService.guardarComanda(comanda);
+		comandaService.save(comanda);
 		assertThat(comanda.getId().longValue()).isNotEqualTo(0);
 
 		comandas = comandaService.encontrarComandaDia(LocalDate.now().toString());
@@ -104,10 +104,10 @@ class ComandaServiceTests {
 				camarero.setTelefono("632632637");
 				camarero.setUsuario("TestComanda3");
 				camarero.setContrasena("12345");
-				camareroService.guardarCamarero(camarero);
+				camareroService.save(camarero);
 		comanda.setCamarero(camarero);
               
-		comandaService.guardarComanda(comanda);
+		comandaService.save(comanda);
 		assertThat(comanda.getId().longValue()).isNotEqualTo(0);
 		assertThat(comandaService.findLastId()).isEqualTo(lastId + 1);
 	}

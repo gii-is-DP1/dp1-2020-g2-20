@@ -8,11 +8,11 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.samples.petclinic.model.Comanda;
 import org.springframework.samples.petclinic.model.LineaPedido;
 import org.springframework.samples.petclinic.model.Pedido;
 import org.springframework.samples.petclinic.model.Producto;
-import org.springframework.samples.petclinic.service.ProveedorService;
+import org.springframework.samples.petclinic.service.LineaPedidoService;
+import org.springframework.samples.petclinic.service.PedidoService;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedPedidoException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -27,15 +27,21 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping("/pedidos")
 public class PedidoController {
-	
 	@Autowired
-	private ProveedorService proveedorService;
+	private PedidoService pedidoService;
+	@Autowired
+	private LineaPedidoService lineaPedidoService;
 	
-	
+	public PedidoController(PedidoService pedidoService, LineaPedidoService lineaPedidoService) {
+		super();
+		this.pedidoService = pedidoService;
+		this.lineaPedidoService = lineaPedidoService;
+	}
+
 	@GetMapping()
 	public String listadoDePedidos(ModelMap modelMap) {
 		String vista="pedidos/listaPedidos";
-		Iterable<Pedido> pedido= proveedorService.findAllPedido();
+		Iterable<Pedido> pedido= pedidoService.findAll();
 		modelMap.addAttribute("pedido", pedido);
 		return vista;
 	}
@@ -43,7 +49,7 @@ public class PedidoController {
 	@GetMapping(path="/porProveedor")
 	public String listadoDePedidosPorProveedor(Integer proveedorID, ModelMap modelMap) {
 		String vista="pedidos/listaPedidos";
-		Iterable<Pedido> pedido= proveedorService.findPedidoByProveedorId(proveedorID);
+		Iterable<Pedido> pedido= pedidoService.findByProveedorId(proveedorID);
 		modelMap.addAttribute("pedido", pedido);
 		return vista;
 	}
@@ -67,7 +73,7 @@ public class PedidoController {
 			return "pedidos/editPedido";
 		}else {
 			 try {                    
-				proveedorService.savePedido(pedido);
+				 pedidoService.save(pedido);
 				modelMap.addAttribute("message", "Guardado Correctamente");
 				view=listadoDePedidos(modelMap);              
              } catch (DuplicatedPedidoException ex) {
@@ -82,8 +88,8 @@ public class PedidoController {
 	@GetMapping(path="/terminarPedido/{pedidoID}")
 	public String recargarStock(@PathVariable("pedidoID") int pedidoID, ModelMap modelMap) {
 		String view= "pedidos/listaPedidos";
-		Optional<Pedido> pedi = proveedorService.pedidoPorId(pedidoID);
-		Iterable<LineaPedido> lineaPedi = proveedorService.findLineaPedidoByPedidoId(pedidoID);
+		Optional<Pedido> pedi = pedidoService.findById(pedidoID);
+		Iterable<LineaPedido> lineaPedi = lineaPedidoService.findByPedidoId(pedidoID);
 		Iterator<LineaPedido> lp_it = lineaPedi.iterator();
 		if(pedi.isPresent()) {
 			Pedido p = pedi.get();
@@ -122,7 +128,7 @@ public class PedidoController {
 				vista = listadoDePedidos(modelMap);
 				return vista;
 			}
-			Collection<Pedido> pedido = proveedorService.encontrarPedidoDia(date);
+			Collection<Pedido> pedido = pedidoService.encontrarPedidoDia(date);
 			modelMap.addAttribute("pedido",pedido);
 			return vista;	
 		}

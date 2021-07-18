@@ -1,22 +1,11 @@
 package org.springframework.samples.petclinic.service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import javax.persistence.EntityManager;
-
-
-
-import javax.persistence.PersistenceContext;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 
 import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,17 +21,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 public class ProductoServiceTests {
 	
 	@Autowired
-	private ProductoService productoervice;
+	private ProductoService productoService;
+	
+	@Autowired
+	private TipoProductoService tipoProductoService;
 	
 	@Test
 	void shouldFindAllProducto() {
-		Collection<Producto> productos=Lists.newArrayList(productoervice.productoList());
+		Collection<Producto> productos=Lists.newArrayList(productoService.findAll());
 		assertThat(productos.size()).isEqualTo(19);
 		
 		
@@ -50,7 +41,7 @@ public class ProductoServiceTests {
 	
 	  @Test
 	  void shouldFindProductoByType(){ 
-		 Collection<TipoProducto> tp= productoervice.encontrarTiposProducto();
+		 Collection<TipoProducto> tp= tipoProductoService.findAll();
 		 for(TipoProducto e: tp) {
 			 assertThat(e).isNotNull();
 	  
@@ -61,10 +52,10 @@ public class ProductoServiceTests {
 	  @Test
 	  @Transactional
 	  void ShouldInsertProduct() {
-		  Collection<TipoProducto> t= this.productoervice.encontrarTiposProducto();
+		  Collection<TipoProducto> t= this.tipoProductoService.findAll();
 		  List<TipoProducto> y= new ArrayList<>();
 		  y.addAll(t);
-		  int beforInsert=Lists.newArrayList(this.productoervice.productoList()).size();
+		  int beforInsert=Lists.newArrayList(this.productoService.findAll()).size();
 		  
 		  Producto p=new Producto();
 		  p.setCantAct(6.0);
@@ -79,10 +70,10 @@ public class ProductoServiceTests {
 		 p.setTipoProducto(y.get(0));
 		 
 		 
-		 this.productoervice.guardarProducto(p);
+		 this.productoService.save(p);
 		 assertThat(p.getId().longValue()).isEqualTo(20);
 		 
-		 int after =Lists.newArrayList(this.productoervice.productoList()).size();
+		 int after =Lists.newArrayList(this.productoService.findAll()).size();
 			assertThat(beforInsert+1).isEqualTo(after);
 		  
 	  }
@@ -90,12 +81,12 @@ public class ProductoServiceTests {
 		@Test
 		void shouldDeleteProducto() throws DataAccessException, PedidoPendienteException {
 
-			int foundBefore = Lists.newArrayList(this.productoervice.productoList()).size();
+			int foundBefore = Lists.newArrayList(this.productoService.findAll()).size();
 
-			Producto pr = this.productoervice.buscaProductoPorId(19).get();
-			this.productoervice.borrarProducto(pr.getId());
+			Producto pr = this.productoService.findById(19).get();
+			this.productoService.deleteById(pr.getId());
 
-			int foundAfter = Lists.newArrayList(this.productoervice.productoList()).size();
+			int foundAfter = Lists.newArrayList(this.productoService.findAll()).size();
 			assertThat(foundBefore).isEqualTo(foundAfter + 1);
 
 		}
@@ -104,8 +95,7 @@ public class ProductoServiceTests {
 	    @Test
 		@Transactional
 		void shouldUpdateProduct() {
-			Optional<Producto> p = this.productoervice.buscaProductoPorId(1);
-			Collection<TipoProducto> tp = this.productoervice.encontrarTiposProducto();
+			Optional<Producto> p = this.productoService.findById(1);
 			
 			String name = "Solomillo";
 			double cantidadActual=p.get().getCantAct();
@@ -118,12 +108,10 @@ public class ProductoServiceTests {
 			tb.setName("pscd");
 			p.get().setTipoProducto(tb);
 			
-			this.productoervice.guardarProducto(p.get());
+			this.productoService.save(p.get());
 			
 			assertThat(p.get().getCantAct()).isEqualTo(cantidadNow);
 			assertThat(p.get().getName()).isEqualTo(name);
-			assertTrue(this.productoervice.buscaProductoPorId(p.get().getId()).isPresent());
+			assertTrue(this.productoService.findById(p.get().getId()).isPresent());
 		}
-	    
-
 }

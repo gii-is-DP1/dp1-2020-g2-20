@@ -1,7 +1,6 @@
 package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
@@ -19,12 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class CocineroServiceTest {
 	@Autowired
 	private CocineroService cocineroService;
-	
-	@Test
-	public void testCountWithInitialData() {
-		int count = cocineroService.cocineroCount();
-		assertEquals(count,2);
-	}
 	
 	  @Test
 	  @Transactional
@@ -44,7 +37,7 @@ public class CocineroServiceTest {
 	       coc.setUsuario("cocinero1");
 	      
 	                
-			this.cocineroService.guardarCocinero(coc);
+			this.cocineroService.save(coc);
 			assertThat(coc.getId().longValue()).isNotEqualTo(0);
 
 			int after = Lists.newArrayList(this.cocineroService.findAll()).size();
@@ -59,7 +52,7 @@ public class CocineroServiceTest {
 	  int foundBefore = ls.size();
 	  
 	  Cocinero cm = this.cocineroService.findById(1).get();
-	  this.cocineroService.borrarCocinero(cm.getId());	  
+	  this.cocineroService.deleteById(cm.getId());	  
 		
 	  List<Cocinero> ls2=Lists.newArrayList(this.cocineroService.findAll());
 		 

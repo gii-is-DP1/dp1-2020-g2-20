@@ -15,8 +15,11 @@ import org.springframework.samples.petclinic.model.Pedido;
 import org.springframework.samples.petclinic.model.Producto;
 import org.springframework.samples.petclinic.model.ProductoDTO;
 import org.springframework.samples.petclinic.model.TipoProducto;
+import org.springframework.samples.petclinic.service.LineaPedidoService;
+import org.springframework.samples.petclinic.service.PedidoService;
 import org.springframework.samples.petclinic.service.ProductoService;
 import org.springframework.samples.petclinic.service.ProveedorService;
+import org.springframework.samples.petclinic.service.TipoProductoService;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedPedidoException;
 import org.springframework.samples.petclinic.service.exceptions.PedidoPendienteException;
 import org.springframework.stereotype.Controller;
@@ -27,7 +30,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
@@ -36,28 +38,45 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductoController {
 	@Autowired
 	private ProductoService productoService;
-	
 	@Autowired 
 	private ProveedorService proveedorService;
-	
+	@Autowired
+	private LineaPedidoService lineaPedidoService;
+	@Autowired
+	private TipoProductoService tipoProductoService;
+	@Autowired
+	private PedidoService pedidoService;
 	@Autowired
 	private ProductoConverter productoConverter;
-	
 	@Autowired
 	private TipoProductoFormatter tipoProductoFormatter;
-	
 	@Autowired
 	private ProveedorFormatter proveedorFormatter;
 	
+	public ProductoController(ProductoService productoService, ProveedorService proveedorService,
+			LineaPedidoService lineaPedidoService, TipoProductoService tipoProductoService, PedidoService pedidoService,
+			ProductoConverter productoConverter, TipoProductoFormatter tipoProductoFormatter,
+			ProveedorFormatter proveedorFormatter) {
+		super();
+		this.productoService = productoService;
+		this.proveedorService = proveedorService;
+		this.lineaPedidoService = lineaPedidoService;
+		this.tipoProductoService = tipoProductoService;
+		this.pedidoService = pedidoService;
+		this.productoConverter = productoConverter;
+		this.tipoProductoFormatter = tipoProductoFormatter;
+		this.proveedorFormatter = proveedorFormatter;
+	}
+
 	@ModelAttribute("tipoproducto") 				//Esto pertenece a TipoProducto
 	public Collection<TipoProducto> poblarTiposProducto() {
-		return this.productoService.encontrarTiposProducto();
+		return this.tipoProductoService.findAll();
 	}
 	
 	@GetMapping()
 	public String listadoProducto(ModelMap modelMap) {
 		String vista= "producto/listaProducto";
-		Iterable<Producto> producto = productoService.productoList();
+		Iterable<Producto> producto = productoService.findAll();
 		Iterator<Producto> it_producto = producto.iterator();
 		
 		if (!(it_producto.hasNext())) {
@@ -71,7 +90,7 @@ public class ProductoController {
 	public String productos_que_faltan(ModelMap modelMap) {
 		String vista= "producto/notificaciones";
 		Collection<Producto> lista = new ArrayList<Producto>();
-		Iterable<Producto> producto = productoService.productoList();
+		Iterable<Producto> producto = productoService.findAll();
 		Iterator<Producto> iter = producto.iterator();
 		while(iter.hasNext()) {
 			Producto product = iter.next();
@@ -87,7 +106,7 @@ public class ProductoController {
 	@GetMapping(path="/new")
 	public String crearProducto(ModelMap modelMap) {
 		String vista= "producto/editProducto";
-		Collection<TipoProducto> collectionTipoProducto = this.productoService.encontrarTiposProducto();
+		Collection<TipoProducto> collectionTipoProducto = this.tipoProductoService.findAll();
 		List<String> collectionProveedor = this.proveedorService.findActivosName();
 		modelMap.addAttribute("producto",new ProductoDTO());
 		modelMap.addAttribute("listaProveedores", collectionProveedor);
@@ -107,7 +126,7 @@ public class ProductoController {
 			modelMap.addAttribute("producto", producto);
 			return "producto/editProducto";
 		}else {
-			productoService.guardarProducto(productoFinal);
+			productoService.save(productoFinal);
 			modelMap.addAttribute("message", "Guardado Correctamente");
 			vista=listadoProducto(modelMap);
 		}
@@ -117,10 +136,10 @@ public class ProductoController {
 	@GetMapping(path="/delete/{productoId}")
 	public String borrarProducto(@PathVariable("productoId") int productoId, ModelMap modelMap)  {
 		String vista= "producto/listaProducto";
-		Optional<Producto> prod= productoService.buscaProductoPorId(productoId);
+		Optional<Producto> prod= productoService.findById(productoId);
 		if(prod.isPresent()) {
 			try {
-				productoService.borrarProducto(productoId);
+				productoService.deleteById(productoId);
 				modelMap.addAttribute("message", "Borrado Correctamente");
 				vista=listadoProducto(modelMap);
 			}catch (PedidoPendienteException ex) {
@@ -138,8 +157,8 @@ public class ProductoController {
 	@GetMapping(value = "/edit/{productoId}")
 	public String initUpdateProductoForm(@PathVariable("productoId") int productoId, ModelMap model) {		
 		String vista= "producto/editarProducto";	
-		Collection<TipoProducto> collectionTipoProducto = this.productoService.encontrarTiposProducto();
-		Producto producto =  productoService.buscaProductoPorId(productoId).get();
+		Collection<TipoProducto> collectionTipoProducto = this.tipoProductoService.findAll();
+		Producto producto =  productoService.findById(productoId).get();
 		ProductoDTO productoConvertido = productoConverter.convertEntityToProductoDTO(producto);
 		Collection<String> collectionProveedor = this.proveedorService.findAllNames();
 		productoConvertido.setTipoproductodto(producto.getTipoProducto().getName());
@@ -158,7 +177,7 @@ public class ProductoController {
 			modelMap.addAttribute("producto", producto);
 			return "producto/editarProducto";
 		}else {
-			this.productoService.guardarProducto(productoFinal);
+			this.productoService.save(productoFinal);
 			modelMap.addAttribute("message", "Guardado Correctamente");
 			return "redirect:/producto";
 		}
@@ -168,20 +187,20 @@ public class ProductoController {
 	@GetMapping(path="/savePedido/{productoId}")
 	public String recargarStock(@PathVariable("productoId") int productoId, ModelMap modelMap) {
 		String vista= "producto/listaProducto";
-		Optional<Producto> prodOpt= productoService.buscaProductoPorId(productoId);
+		Optional<Producto> prodOpt= productoService.findById(productoId);
 		if(prodOpt.isPresent()) {
 			try {
 			Producto producto = prodOpt.get();
-			Collection<Producto> listaProducto = proveedorService.encontrarProductoProveedor(producto);
+			Collection<Producto> listaProducto = productoService.findByProveedor(producto);
 			Pedido pedido = new Pedido();
 			pedido.setProveedor(producto.getProveedor());
 			pedido.setFechaPedido(LocalDate.now());
 			pedido.setHaLlegado(Boolean.FALSE);
-			proveedorService.savePedido(pedido);
+			pedidoService.save(pedido);
 			LineaPedido lineaPedido = new LineaPedido();
 			for(Producto p : listaProducto) {
-				lineaPedido = proveedorService.anadirLineaPedido(p, pedido);
-				proveedorService.saveLineaPedido(lineaPedido);
+				lineaPedido = lineaPedidoService.anadirLineaPedido(p, pedido);
+				lineaPedidoService.save(lineaPedido);
 			}
 			modelMap.addAttribute("message", "Se ha creado el pedido correctamente");
 			vista = listadoProducto(modelMap);

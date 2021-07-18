@@ -23,19 +23,15 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.petclinic.model.Producto;
 import org.springframework.stereotype.Service;
 
-
-
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 class IngredienteServiceTests {        
 	
 	@Autowired
-    protected IngredienteService ingredienteService;   
+    protected ProductoService productoService;   
       
 	@Test
 	public void testEncontrarProductos() {
-		Collection<Producto> count = ingredienteService.encontrarProductos();
+		Collection<Producto> count = (Collection<Producto>) productoService.findAll();
 		assertEquals(count.size(),19);
 	}
-  
-
 }

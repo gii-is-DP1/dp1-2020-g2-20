@@ -23,11 +23,16 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping(value = "/cocinero")
 public class CocineroController {
-
 	@Autowired
 	private CocineroService cocineroService;
 	@Autowired
 	private AuthoritiesService authoritiesService;
+	
+	public CocineroController(CocineroService cocineroService, AuthoritiesService authoritiesService) {
+		super();
+		this.cocineroService = cocineroService;
+		this.authoritiesService = authoritiesService;
+	}
 
 	@InitBinder("cocinero")
 	public void initCocineroBinder(WebDataBinder dataBinder) {
@@ -57,14 +62,14 @@ public class CocineroController {
 	}
 
 	@PostMapping(path = "/save")
-	public String guardarCocinero(@Valid Cocinero cocinero, BindingResult result, ModelMap modelMap) {
+	public String save(@Valid Cocinero cocinero, BindingResult result, ModelMap modelMap) {
 		String vista = "cocinero/listaCocinero";
 		if (result.hasErrors()) {
 			log.info(String.format("Chef with name %s wasn't able to be created", cocinero.getName()));
 			modelMap.addAttribute("cocinero", cocinero);
 			return "cocinero/editCocinero";
 		} else {
-			cocineroService.guardarCocinero(cocinero);
+			cocineroService.save(cocinero);
 			modelMap.addAttribute("message", "Guardado Correctamente");
 			vista = listadoCocinero(modelMap);
 		}
@@ -73,11 +78,11 @@ public class CocineroController {
 	}
 
 	@GetMapping(path = "/delete/{cocineroId}")
-	public String borrarCocinero(@PathVariable("cocineroId") int cocineroId, ModelMap modelMap) {
+	public String deleteById(@PathVariable("cocineroId") int cocineroId, ModelMap modelMap) {
 		String vista = "cocinero/listaCocinero";
 		Optional<Cocinero> cam = cocineroService.findById(cocineroId);
 		if (cam.isPresent()) {
-			cocineroService.borrarCocinero(cocineroId);
+			cocineroService.deleteById(cocineroId);
 			modelMap.addAttribute("message", "Borrado Correctamente");
 			vista = listadoCocinero(modelMap);
 		} else {
@@ -106,7 +111,7 @@ public class CocineroController {
 			modelMap.addAttribute("cocinero", cocinero);
 			return "cocinero/editarCocinero";
 		}else {
-			this.cocineroService.guardarCocinero(cocinero);
+			this.cocineroService.save(cocinero);
 			return "redirect:/cocinero";
 		}
 	}

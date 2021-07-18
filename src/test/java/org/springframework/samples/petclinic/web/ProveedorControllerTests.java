@@ -54,8 +54,8 @@ class ProveedorControllerTests {
 		proveedor.setGmail("patata@gmail.com");
 		proveedor.setTelefono("954333333");
 
-		given(this.proveedorService.findProveedorbyName("jorge")).willReturn(proveedor);
-		given(this.proveedorService.provedroporid(TEST_PROVEEDOR_ID)).willReturn(Optional.of(proveedor));
+		given(this.proveedorService.findByName("jorge")).willReturn(proveedor);
+		given(this.proveedorService.findById(TEST_PROVEEDOR_ID)).willReturn(Optional.of(proveedor));
 
 
 }

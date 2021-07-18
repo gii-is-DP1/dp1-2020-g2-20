@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.samples.petclinic.service.PedidoService;
 import org.springframework.samples.petclinic.service.ProveedorService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -36,7 +37,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 @WebMvcTest(controllers=PedidoController.class,
 		excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class),
 		excludeAutoConfiguration= SecurityConfiguration.class)
-class PedidoControllerTests2 {
+class PedidoControllerTests {
 	
 	private static final int TEST_PEDIDO_ID = 1;
 	private static final int TEST_PEDIDO_ID2 = 2;
@@ -44,6 +45,8 @@ class PedidoControllerTests2 {
 
 	@MockBean
 	private ProveedorService proveedorService;
+	@MockBean
+	private PedidoService pedidoService;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -83,9 +86,9 @@ class PedidoControllerTests2 {
 		lPorDia = new ArrayList<Pedido>();
 		lPorDia.add(pedido2);
 		
-		given(this.proveedorService.pedidoPorId(TEST_PEDIDO_ID)).willReturn(Optional.of(pedido));
-		given(this.proveedorService.pedidoPorId(TEST_PEDIDO_ID2)).willReturn(Optional.of(pedido2));
-		given(this.proveedorService.encontrarPedidoDia("2021-01-30")).willReturn(lPorDia);
+		given(this.pedidoService.findById(TEST_PEDIDO_ID)).willReturn(Optional.of(pedido));
+		given(this.pedidoService.findById(TEST_PEDIDO_ID2)).willReturn(Optional.of(pedido2));
+		given(this.pedidoService.encontrarPedidoDia("2021-01-30")).willReturn(lPorDia);
 //		given(this.proveedorService.findPedidoByProveedorId(7).iterator().next()).willReturn(pedido);
 //		given(this.proveedorService.findProveedorbyName("jorge")).willReturn(proveedor);
 //		given(this.proveedorService.findPedidoByProveedorId(7).iterator().next()).willReturn(prueba);

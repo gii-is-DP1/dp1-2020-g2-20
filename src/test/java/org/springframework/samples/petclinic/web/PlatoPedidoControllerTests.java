@@ -41,6 +41,7 @@ import org.springframework.samples.petclinic.model.PlatoPedido;
 import org.springframework.samples.petclinic.model.PlatoPedidoDTO;
 import org.springframework.samples.petclinic.model.Producto;
 import org.springframework.samples.petclinic.model.Proveedor;
+import org.springframework.samples.petclinic.service.EstadoPlatoService;
 import org.springframework.samples.petclinic.service.IngredientePedidoService;
 import org.springframework.samples.petclinic.service.IngredienteService;
 import org.springframework.samples.petclinic.service.PlatoPedidoService;
@@ -52,7 +53,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @WebMvcTest(value = PlatoPedidoController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
 classes = WebSecurityConfigurer.class),
 excludeAutoConfiguration = SecurityConfiguration.class)
-public class PlatoPedidoControllerTest {
+public class PlatoPedidoControllerTests {
 
 	
 	private static final int TEST_PLATOPEDIDO_ID = 1;
@@ -60,8 +61,8 @@ public class PlatoPedidoControllerTest {
 	
 
 	
-	@Autowired
-	private PlatoPedidoController platoPedidoController;
+	@MockBean
+	private EstadoPlatoService estadoPlatoService;
 	
 	@MockBean
 	private PlatoPedidoService platoPedidoService;
@@ -144,9 +145,9 @@ public class PlatoPedidoControllerTest {
 		
 		Collection<IngredientePedido> platosPedidos = new ArrayList<>();
 
-		given(this.ingredienteService.buscaIngPorId(ingrediente.getId())).willReturn(Optional.of(ingrediente));
+		given(this.ingredienteService.findById(ingrediente.getId())).willReturn(Optional.of(ingrediente));
 		given(this.platoPedidoService.findById(TEST_PLATOPEDIDO_ID)).willReturn(Optional.of(platoPedido));
-		given(this.platoPedidoService.encontrarEstadoPlato()).willReturn(estadosPlato);
+		given(this.estadoPlatoService.findAll()).willReturn(estadosPlato);
 		given(this.platoPedidoService.CrearIngredientesPedidos(platoPedido)).willReturn(platosPedidos);
 		
 	}

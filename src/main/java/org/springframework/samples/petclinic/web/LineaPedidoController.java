@@ -5,7 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.LineaPedido;
 import org.springframework.samples.petclinic.model.ProductoDTO;
-import org.springframework.samples.petclinic.service.ProveedorService;
+import org.springframework.samples.petclinic.service.LineaPedidoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -16,14 +16,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/lineaPedido")
 public class LineaPedidoController {
-	
 	@Autowired
-	private ProveedorService proveedorService;
+	private LineaPedidoService lineaPedidoService;
 	
+	public LineaPedidoController(LineaPedidoService lineaPedidoService) {
+		super();
+		this.lineaPedidoService = lineaPedidoService;
+	}
+
 	@GetMapping()
 	public String listadoDeLineaPedido(ModelMap modelMap) {
 		String vista="lineaPedido/listaLineaPedido";
-		Iterable<LineaPedido> lineaPedido= proveedorService.findAllLineaPedido();
+		Iterable<LineaPedido> lineaPedido= lineaPedidoService.findAll();
 		modelMap.addAttribute("lineaPedido", lineaPedido);
 		return vista;
 	}
@@ -31,7 +35,7 @@ public class LineaPedidoController {
 	@GetMapping(path="/porPedido")
 	public String listadoDeLineaPedidosPorPedido(Integer pedidoID, ModelMap modelMap) {
 		String vista="lineaPedido/listaLineaPedido";
-		Iterable<LineaPedido> lineapedido= proveedorService.findLineaPedidoByPedidoId(pedidoID);
+		Iterable<LineaPedido> lineapedido= lineaPedidoService.findByPedidoId(pedidoID);
 		modelMap.addAttribute("lineaPedido", lineapedido);
 		return vista;
 	}
@@ -53,7 +57,7 @@ public class LineaPedidoController {
 			modelMap.addAttribute("lineaPedido", lineaPedido);
 			return "lineaPedido/editLineaPedido";
 		}else {
-			proveedorService.saveLineaPedido(lineaPedido);
+			lineaPedidoService.save(lineaPedido);
 			modelMap.addAttribute("message", "Guardado Correctamente");
 			view=listadoDeLineaPedido(modelMap);
 		}
