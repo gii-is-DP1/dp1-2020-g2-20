@@ -114,14 +114,10 @@ public class ComandaController {
 	
 	@GetMapping(path="/listaComandaActual/new")
 	public String crearComanda(Integer mesa,ModelMap modelMap,Principal user) {
-        if(mesa==null||mesa>20||mesa<1) {
-            return "redirect:/comanda/listaComandaActual";
-        }else {
         Comanda comanda = comandaService.crearComanda(mesa, user);
         int comandaId = comandaService.findLastId();
         modelMap.addAttribute("comanda", comanda);
         return "redirect:/comanda/listaComandaActual/"+comandaId;
-        }
     }
 	
 	

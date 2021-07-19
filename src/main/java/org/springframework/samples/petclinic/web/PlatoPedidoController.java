@@ -64,8 +64,8 @@ public class PlatoPedidoController {
 
 	@ModelAttribute("estadoplatopedido") // Esto pertenece a EstadoPlato
 	public Collection<EstadoPlato> poblarEstadosPlato() {
-		Collection<EstadoPlato> res = estadoPlatoService.findAll();
-		return res;
+		return estadoPlatoService.findAll();
+		
 	}
 
 	@GetMapping()
