@@ -12,6 +12,8 @@ import org.springframework.samples.petclinic.model.Comanda;
 import org.springframework.samples.petclinic.model.Plato;
 import org.springframework.samples.petclinic.model.PlatoPedido;
 import org.springframework.samples.petclinic.model.PlatoPedidoDTO;
+import org.springframework.samples.petclinic.service.AuthoritiesService;
+import org.springframework.samples.petclinic.service.CocineroService;
 import org.springframework.samples.petclinic.service.ComandaService;
 import org.springframework.samples.petclinic.service.PlatoPedidoService;
 import org.springframework.samples.petclinic.service.PlatoService;
@@ -23,19 +25,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.extern.slf4j.Slf4j;
-@Slf4j
+
 @Controller
 @RequestMapping(value = "/comanda")
 public class ComandaController {
 	
-	@Autowired
 	private ComandaService comandaService;
-
-	@Autowired
 	private PlatoPedidoService platoPedidoService;
+	private PlatoService platoService;
 	
 	@Autowired
-	private PlatoService platoService;
+	public ComandaController(ComandaService comandaService, PlatoPedidoService platoPedidoService, 
+			PlatoService platoService) {
+		super();
+		this.comandaService = comandaService;
+		this.platoPedidoService = platoPedidoService;
+		this.platoService = platoService;
+	}
 	
 	//Vista de Propietario para la lista total de Comandas
 	@GetMapping(path="/listaComandaTotal")

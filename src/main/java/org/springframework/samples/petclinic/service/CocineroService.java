@@ -80,14 +80,14 @@ public class CocineroService {
 	@Transactional(readOnly = true)
 	public BindingResult erroresSinMismoUser(Cocinero cocinero,BindingResult result) throws DataAccessException {
 		List<FieldError> errorsToKeep = result.getFieldErrors().stream()
-                .filter(fer -> !fer.getField().equals("usuario"))
+				.filter(fer -> !fer.getField().equals("usuario"))
                 .collect(Collectors.toList());
 		
-		 result = new BeanPropertyBindingResult(cocinero, "cocinero");
+		result = new BeanPropertyBindingResult(cocinero, "cocinero");
 
-	        for (FieldError fieldError : errorsToKeep) {
-	            result.addError(fieldError);
-	        }
-			return result;
+		for (FieldError fieldError : errorsToKeep) {
+			result.addError(fieldError);
+		}
+		return result;
 	}
 }

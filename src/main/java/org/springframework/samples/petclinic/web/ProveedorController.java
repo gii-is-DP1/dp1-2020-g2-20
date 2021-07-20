@@ -21,9 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping("/proveedor")
 public class ProveedorController {
-	@Autowired
+
 	private ProveedorService proveedorService;
 	
+	@Autowired
 	public ProveedorController(ProveedorService proveedorService) {
 		super();
 		this.proveedorService = proveedorService;

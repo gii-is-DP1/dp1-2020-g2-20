@@ -33,21 +33,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequestMapping(value = "/platopedido")
 public class PlatoPedidoController {
-	@Autowired
+	
 	private PlatoPedidoService platoPedidoService;
-	@Autowired
 	private IngredientePedidoService ingredientePedidoService;
-	@Autowired
 	private IngredienteService ingredienteService;
-	@Autowired
 	private EstadoPlatoService estadoPlatoService;
-	@Autowired
 	private PlatoPedidoConverter ppConverter;
-	@Autowired
 	private EstadoPlatoFormatter estadoPlatoFormatter;
-	@Autowired
 	private PlatoFormatter platoFormatter;
 	
+	@Autowired
 	public PlatoPedidoController(PlatoPedidoService platoPedidoService,
 			IngredientePedidoService ingredientePedidoService, IngredienteService ingredienteService,
 			EstadoPlatoService estadoPlatoService, PlatoPedidoConverter ppConverter,

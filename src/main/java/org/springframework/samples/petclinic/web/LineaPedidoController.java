@@ -16,9 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/lineaPedido")
 public class LineaPedidoController {
-	@Autowired
+	
 	private LineaPedidoService lineaPedidoService;
 	
+	@Autowired
 	public LineaPedidoController(LineaPedidoService lineaPedidoService) {
 		super();
 		this.lineaPedidoService = lineaPedidoService;
