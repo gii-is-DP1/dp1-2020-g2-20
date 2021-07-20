@@ -13,6 +13,7 @@ import org.springframework.samples.petclinic.model.Pedido;
 import org.springframework.samples.petclinic.model.Producto;
 import org.springframework.samples.petclinic.service.LineaPedidoService;
 import org.springframework.samples.petclinic.service.PedidoService;
+import org.springframework.samples.petclinic.service.ProductoService;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedPedidoException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -27,15 +28,15 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping("/pedidos")
 public class PedidoController {
-	@Autowired
-	private PedidoService pedidoService;
-	@Autowired
-	private LineaPedidoService lineaPedidoService;
 	
-	public PedidoController(PedidoService pedidoService, LineaPedidoService lineaPedidoService) {
+	private PedidoService pedidoService;
+	private ProductoService productoService;
+	
+	@Autowired
+	public PedidoController(PedidoService pedidoService, ProductoService productoService) {
 		super();
 		this.pedidoService = pedidoService;
-		this.lineaPedidoService = lineaPedidoService;
+		this.productoService = productoService;
 	}
 
 	@GetMapping()
@@ -89,21 +90,11 @@ public class PedidoController {
 	public String recargarStock(@PathVariable("pedidoID") int pedidoID, ModelMap modelMap) {
 		String view= "pedidos/listaPedidos";
 		Optional<Pedido> pedi = pedidoService.findById(pedidoID);
-		Iterable<LineaPedido> lineaPedi = lineaPedidoService.findByPedidoId(pedidoID);
-		Iterator<LineaPedido> lp_it = lineaPedi.iterator();
 		if(pedi.isPresent()) {
 			Pedido p = pedi.get();
-			if (p.getHaLlegado().equals(Boolean.FALSE)) {
-				//Modificacion de producto
-				while (lp_it.hasNext()) {
-					LineaPedido lp = lp_it.next();
-					Producto prod = lp.getProducto();
-					prod.setCantAct(prod.getCantAct()+lp.getCantidad());
-				}
-		
-				//Modificacion de pedido
-				p.setHaLlegado(Boolean.TRUE);
-				p.setFechaEntrega(LocalDate.now());
+			if (pedi.get().getHaLlegado().equals(Boolean.FALSE)) {
+				productoService.recargarStock(pedidoID);
+				
 				modelMap.addAttribute("message", "Se ha finalizado el pedido correctamente");
 				modelMap.addAttribute("pedidoFinalizado", p);
 				view = listadoDePedidos(modelMap);
@@ -111,7 +102,6 @@ public class PedidoController {
 				modelMap.addAttribute("message", "El pedido ya se ha finalizado");
 				view = listadoDePedidos(modelMap);
 			}
-			
 		}else {
 			modelMap.addAttribute("message", "not found");
 			view = listadoDePedidos(modelMap);
