@@ -21,13 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class CamareroService {
-	@Autowired
+	
 	private UserService userService;
-	@Autowired
 	private CamareroRepository camareroRepository;
-	@Autowired
 	private AuthoritiesService authoritiesService;
 	
+	@Autowired
 	public CamareroService(UserService userService, CamareroRepository camareroRepository,
 			AuthoritiesService authoritiesService) {
 		super();
@@ -36,12 +35,10 @@ public class CamareroService {
 		this.authoritiesService = authoritiesService;
 	}
 
-	@Transactional
 	public Iterable<Camarero> findAll() {
 		return camareroRepository.findAll();
 	}
 	
-	@Transactional
 	public Optional<Camarero> findById(int camareroId) throws DataAccessException {
 		return this.camareroRepository.findById(camareroId);
 	}
@@ -71,7 +68,7 @@ public class CamareroService {
 	}
 
 	// Se usa para asignar un camarero a una comanda dado su usario
-	@Transactional
+	@Transactional(readOnly = true)
 	public Camarero findByUser(String user) {
 		Camarero camarero = new Camarero();
 		Iterable<Camarero> aux = camareroRepository.findAll();
@@ -84,7 +81,7 @@ public class CamareroService {
 		return camarero;
 	}
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public Boolean CamareroConMismoUsuario(Camarero camarero) throws DataAccessException {
 		Boolean res=false;
 		Integer camareroId= camarero.getId();
@@ -96,7 +93,7 @@ public class CamareroService {
 		
 	}
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public BindingResult ErroresSinMismoUser(Camarero camarero,BindingResult result) throws DataAccessException {
 		List<FieldError> errorsToKeep = result.getFieldErrors().stream()
                 .filter(fer -> !fer.getField().equals("usuario"))

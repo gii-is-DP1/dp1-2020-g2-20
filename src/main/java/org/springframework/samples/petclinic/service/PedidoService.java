@@ -19,30 +19,27 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class PedidoService {
-	@Autowired
+	
 	private PedidoRepository pedidoRepository;
 	
+	@Autowired
 	public PedidoService(PedidoRepository pedidoRepository) {
 		super();
 		this.pedidoRepository = pedidoRepository;
 	}
 
-	@Transactional
 	public Iterable<Pedido> findAll(){
 		return pedidoRepository.findAll();
 	}
 	
-	@Transactional
 	public Optional<Pedido> findById(Integer id) {
 		return pedidoRepository.findById(id);
 	} 
 	
-	@Transactional
 	public Iterable<Pedido> findByProveedorId(int proveedorID) {
 		return pedidoRepository.findByProveedorId(proveedorID);
 	}
 	
-	@Transactional
 	public int count(){
 		return (int) pedidoRepository.count();
 	}
@@ -67,7 +64,7 @@ public class PedidoService {
 	}
 	
 	//Esto es para encontrar los pedidos por un dia de la semana 
-	@Transactional
+	@Transactional(readOnly = true)
 	public Collection<Pedido> encontrarPedidoDia(String dia) throws DataAccessException {
 		LocalDate actualDate = LocalDate.parse(dia);
 		Collection<Pedido> res = new ArrayList<>();

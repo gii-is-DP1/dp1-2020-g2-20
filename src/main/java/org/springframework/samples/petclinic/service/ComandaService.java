@@ -20,13 +20,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class ComandaService {
-	@Autowired
+	
 	private ComandaRepository comandaRepository;
-	@Autowired
 	private PlatoPedidoService platoPedidoService;
-	@Autowired
 	private CamareroService camareroService;
 	
+	@Autowired
 	public ComandaService(ComandaRepository comandaRepository, PlatoPedidoService platoPedidoService,
 			CamareroService camareroService) {
 		super();
@@ -35,18 +34,15 @@ public class ComandaService {
 		this.camareroService = camareroService;
 	}
 
-	@Transactional
 	public Iterable<Comanda> findAll() {
 		Iterable<Comanda> res = comandaRepository.findAll();
 		return res;
 	}
 	
-	@Transactional
 	public Optional<Comanda> findById(Integer id) {
 		return comandaRepository.findById(id);
 	}
 	
-	@Transactional
 	public int count() {
 		return (int) comandaRepository.count();	
 	}
@@ -57,9 +53,7 @@ public class ComandaService {
 		return comandaRepository.save(comanda);
 	}
 	
-
-	
-	@Transactional
+	@Transactional(readOnly = true)
 	public Collection<Comanda> encontrarComandaDia(String dia) throws DataAccessException {
 		LocalDate actualDate =LocalDate.parse(dia);
 		Collection<Comanda> res = new ArrayList<>();
@@ -74,7 +68,7 @@ public class ComandaService {
 		return res; 
 	}
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public Collection<Comanda> encontrarComandaActual() throws DataAccessException {
 		Collection<Comanda> res = new ArrayList<>();
 		Iterable<Comanda> aux = comandaRepository.findAll();
@@ -88,7 +82,6 @@ public class ComandaService {
 		return res; 
 	}
 	
-	@Transactional
 	public Integer findLastId() throws DataAccessException{
 		return comandaRepository.findLastId();
 	}
@@ -104,7 +97,7 @@ public class ComandaService {
 		return comanda;
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public Collection<PlatoPedido> getPlatosPedidoDeComanda(int comandaID){
 		Iterable<PlatoPedido> allPP = platoPedidoService.findAll();
 		Iterator<PlatoPedido> it = allPP.iterator();
@@ -127,7 +120,7 @@ public class ComandaService {
 		platoPedidoService.save(plato);
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public Boolean estaFinalizado(Comanda comanda){
 		Boolean res= false;
 		Iterator<PlatoPedido> listaPlatosPedidos = comanda.getPlatosPedidos().iterator();

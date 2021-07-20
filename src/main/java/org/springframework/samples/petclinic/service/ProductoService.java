@@ -19,29 +19,26 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class ProductoService {
-	@Autowired
+	
 	private ProductoRepository productoRepository;
-	@Autowired
 	private LineaPedidoRepository lineaPedidoRepository;
 	
+	@Autowired
 	public ProductoService(ProductoRepository productoRepository, LineaPedidoRepository lineaPedidoRepository) {
 		super();
 		this.productoRepository = productoRepository;
 		this.lineaPedidoRepository = lineaPedidoRepository;
 	}
 
-	@Transactional(readOnly = true)
 	public Iterable<Producto> findAll() throws DataAccessException {
 		return productoRepository.findAll();
 	}	
 	
-	@Transactional
 	public Optional<Producto> findById(Integer id) {
 		return productoRepository.findById(id);
 	}
 	
 	//Esto se usa al realizar un pedido pues se necesita la lista de productos con el mismo proveedor
-	@Transactional
 	public Collection<Producto> findByProveedor(Producto producto) throws DataAccessException {
 		Proveedor proveedor = producto.getProveedor();
 		return productoRepository.findByProveedor(proveedor);
