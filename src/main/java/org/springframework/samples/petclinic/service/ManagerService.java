@@ -20,13 +20,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class ManagerService {
-	@Autowired
+	
 	private AuthoritiesService authoritiesService;
-	@Autowired
 	private UserService userService;
-	@Autowired
 	private ManagerRepository managerRepository;
 	
+	@Autowired
 	public ManagerService(AuthoritiesService authoritiesService, UserService userService,
 			ManagerRepository managerRepository) {
 		super();
@@ -35,12 +34,10 @@ public class ManagerService {
 		this.managerRepository = managerRepository;
 	}
 
-	@Transactional
 	public Iterable<Manager> findAll() {
 		return managerRepository.findAll();
 	}
 	
-	@Transactional
 	public Optional<Manager> findById(Integer id) {
 		return managerRepository.findById(id);
 	}
@@ -72,7 +69,7 @@ public class ManagerService {
 		log.info(String.format("Manager with username %s has been deleted", manager.getUsuario()));
 	}
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public Boolean managerConMismoUsuario(Manager manager) throws DataAccessException {
 		Boolean res=false;
 		Integer managerId= manager.getId();
@@ -83,7 +80,7 @@ public class ManagerService {
 		return res;
 	}
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public BindingResult erroresSinMismoUser(Manager manager,BindingResult result) throws DataAccessException {
 		List<FieldError> errorsToKeep = result.getFieldErrors().stream()
 				.filter(fer -> !fer.getField().equals("usuario"))

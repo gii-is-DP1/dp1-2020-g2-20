@@ -17,11 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class IngredientePedidoService {
-	@Autowired
+	
 	private IngredientePedidoRepository ingredientePedidoRepository;
-	@Autowired
 	private ProductoService productoService;
 	
+	@Autowired
 	public IngredientePedidoService(IngredientePedidoRepository ingredientePedidoRepository,
 			ProductoService productoService) {
 		super();
@@ -29,7 +29,6 @@ public class IngredientePedidoService {
 		this.productoService = productoService;
 	}
 
-	@Transactional
 	public List<IngredientePedido> findByPlatoPedidoId(Integer id) {
 		Collection<IngredientePedido> ls = ingredientePedidoRepository.findAll();
 		List<IngredientePedido> res = new ArrayList<IngredientePedido>();

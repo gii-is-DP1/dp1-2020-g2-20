@@ -50,7 +50,8 @@ public class UserService {
 	public Optional<User> findUser(String username) {
 		return userRepository.findById(username);
 	}
-
+	
+	@Transactional
 	public void deleteUser(User user) {
 		this.userRepository.delete(user); 
 		

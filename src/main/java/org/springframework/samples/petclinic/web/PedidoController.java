@@ -87,27 +87,27 @@ public class PedidoController {
 	
 
 	@GetMapping(path="/terminarPedido/{pedidoID}")
-    public String recargarStock(@PathVariable("pedidoID") int pedidoID, ModelMap modelMap) {
-        String view= "pedidos/listaPedidos";
-        Optional<Pedido> pedi = pedidoService.findById(pedidoID);
-        if(pedi.isPresent()) {
-            Pedido p = pedi.get();
-            if (pedi.get().getHaLlegado().equals(Boolean.FALSE)) {
-                productoService.recargarStock(pedidoID);
-
-                modelMap.addAttribute("message", "Se ha finalizado el pedido correctamente");
-                modelMap.addAttribute("pedidoFinalizado", p);
-                view = listadoDePedidos(modelMap);
-            } else {
-                modelMap.addAttribute("message", "El pedido ya se ha finalizado");
-                view = listadoDePedidos(modelMap);
-            }
-        }else {
-            modelMap.addAttribute("message", "not found");
-            view = listadoDePedidos(modelMap);
-        }
-        return view;
-    }
+	public String recargarStock(@PathVariable("pedidoID") int pedidoID, ModelMap modelMap) {
+		String view= "pedidos/listaPedidos";
+		Optional<Pedido> pedi = pedidoService.findById(pedidoID);
+		if(pedi.isPresent()) {
+			Pedido p = pedi.get();
+			if (pedi.get().getHaLlegado().equals(Boolean.FALSE)) {
+				productoService.recargarStock(pedidoID);
+				
+				modelMap.addAttribute("message", "Se ha finalizado el pedido correctamente");
+				modelMap.addAttribute("pedidoFinalizado", p);
+				view = listadoDePedidos(modelMap);
+			} else {
+				modelMap.addAttribute("message", "El pedido ya se ha finalizado");
+				view = listadoDePedidos(modelMap);
+			}
+		}else {
+			modelMap.addAttribute("message", "not found");
+			view = listadoDePedidos(modelMap);
+		}
+		return view;
+	}
 	
 	//Todas las comandas de x dia. 
 		@GetMapping(path="/listaPedidoTotal/dia")

@@ -19,23 +19,21 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class PlatoService {
-	@Autowired
+	
 	private PlatoRepository platoRepository;
-	@Autowired
 	private IngredienteRepository ingredienteRepository;
 	
+	@Autowired
 	public PlatoService(PlatoRepository platoRepository, IngredienteRepository ingredienteRepository) {
 		super();
 		this.platoRepository = platoRepository;
 		this.ingredienteRepository = ingredienteRepository;
 	}
 
-	@Transactional
 	public Collection<Plato> findAll() {
 		return  (Collection<Plato>) platoRepository.findAll();	
 	}
 	
-	@Transactional
 	public Optional<Plato> findById(Integer id) {
 		return platoRepository.findById(id);	
 	}
@@ -53,7 +51,7 @@ public class PlatoService {
 		log.info(String.format("Plate with name %s has been saved", plato.getName()));
 	}
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public boolean ingredienteEstaRepetido(String nombreIng, int platoId) {
 		Collection<Ingrediente> ls= ingredienteRepository.findAll();	
 		boolean res = false;
@@ -67,7 +65,7 @@ public class PlatoService {
 	}
 	
 	//Mostrar platos disponibles para ofrecerlos (elimina platos de los que faltan ingredientes)
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Plato> findAllAvailable() {
 		Boolean falta = false;
 		List<Plato> listaPlatos = platoRepository.findByDisponibleTrue();

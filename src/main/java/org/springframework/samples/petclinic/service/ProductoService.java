@@ -22,32 +22,29 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class ProductoService {
 	private ProductoRepository productoRepository;
-    private LineaPedidoRepository lineaPedidoRepository;
-    private LineaPedidoService lineaPedidoService;
-    private PedidoService pedidoService;
+	private LineaPedidoRepository lineaPedidoRepository;
+	private LineaPedidoService lineaPedidoService;
+	private PedidoService pedidoService;
+	
+	@Autowired
+	public ProductoService(ProductoRepository productoRepository, LineaPedidoRepository lineaPedidoRepository,
+			LineaPedidoService lineaPedidoService, PedidoService pedidoService) {
+		super();
+		this.productoRepository = productoRepository;
+		this.lineaPedidoRepository = lineaPedidoRepository;
+		this.lineaPedidoService = lineaPedidoService;
+		this.pedidoService = pedidoService;
+	}
 
-    @Autowired
-    public ProductoService(ProductoRepository productoRepository, LineaPedidoRepository lineaPedidoRepository,
-            LineaPedidoService lineaPedidoService, PedidoService pedidoService) {
-        super();
-        this.productoRepository = productoRepository;
-        this.lineaPedidoRepository = lineaPedidoRepository;
-        this.lineaPedidoService = lineaPedidoService;
-        this.pedidoService = pedidoService;
-    }
-
-	@Transactional(readOnly = true)
 	public Iterable<Producto> findAll() throws DataAccessException {
 		return productoRepository.findAll();
 	}	
-	
-	@Transactional
+
 	public Optional<Producto> findById(Integer id) {
 		return productoRepository.findById(id);
 	}
 	
 	//Esto se usa al realizar un pedido pues se necesita la lista de productos con el mismo proveedor
-	@Transactional
 	public Collection<Producto> findByProveedor(Producto producto) throws DataAccessException {
 		Proveedor proveedor = producto.getProveedor();
 		return productoRepository.findByProveedor(proveedor);
@@ -77,23 +74,23 @@ public class ProductoService {
 		log.info(String.format("Product with name %s has been deleted", producto.getName()));
 		}
 	}
-
+	
 	//Esto es para establecer los productos una vez se recibe un Pedido
 	public void recargarStock(Integer pedidoId) throws DataAccessException{
-	    Optional<Pedido> pedi = pedidoService.findById(pedidoId);
-	    Iterable<LineaPedido> lineaPedi = lineaPedidoService.findByPedidoId(pedidoId);
-	    Iterator<LineaPedido> lp_it = lineaPedi.iterator();
-	
-	    //Modificacion de producto
-	    while (lp_it.hasNext()) {
-	        LineaPedido lp = lp_it.next();
-	        Producto prod = lp.getProducto();
-	        prod.setCantAct(prod.getCantAct()+lp.getCantidad());
-	    }
-	
-	    //Modificacion de pedido
-	    Pedido p = pedi.get();
-	    p.setHaLlegado(Boolean.TRUE);
-	    p.setFechaEntrega(LocalDate.now());
+		Optional<Pedido> pedi = pedidoService.findById(pedidoId);
+		Iterable<LineaPedido> lineaPedi = lineaPedidoService.findByPedidoId(pedidoId);
+		Iterator<LineaPedido> lp_it = lineaPedi.iterator();
+		
+		//Modificacion de producto
+		while (lp_it.hasNext()) {
+			LineaPedido lp = lp_it.next();
+			Producto prod = lp.getProducto();
+			prod.setCantAct(prod.getCantAct()+lp.getCantidad());
+		}
+		
+		//Modificacion de pedido
+		Pedido p = pedi.get();
+		p.setHaLlegado(Boolean.TRUE);
+		p.setFechaEntrega(LocalDate.now());
 	}
 }
