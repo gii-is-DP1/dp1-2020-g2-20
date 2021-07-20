@@ -15,25 +15,23 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class IngredienteService {
-	@Autowired
+	
 	private IngredienteRepository ingredienteRepository;
 	
+	@Autowired
 	public IngredienteService(IngredienteRepository ingredienteRepository) {
 		super();
 		this.ingredienteRepository = ingredienteRepository;
 	}
 
-	@Transactional
 	public Iterable<Ingrediente> findAll() {
 		return ingredienteRepository.findAll();
 	}
 	
-	@Transactional
 	public Optional<Ingrediente> findById(Integer id) {
 		return ingredienteRepository.findById(id);
 	}
 	
-	@Transactional
 	public List<Ingrediente> findByPlatoId(Integer id){
 		Collection<Ingrediente> ls= ingredienteRepository.findAll();
 		List<Ingrediente> res= new ArrayList<Ingrediente>();

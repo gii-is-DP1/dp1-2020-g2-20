@@ -17,11 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class PlatoPedidoService {
-	@Autowired
+	
 	private PlatoPedidoRepository platoPedidoRepository;
-	@Autowired
 	private IngredientePedidoService ingredientePedidoService;
 	
+	@Autowired
 	public PlatoPedidoService(PlatoPedidoRepository platoPedidoRepository,
 			IngredientePedidoService ingredientePedidoService) {
 		super();
@@ -29,17 +29,14 @@ public class PlatoPedidoService {
 		this.ingredientePedidoService = ingredientePedidoService;
 	}
 
-	@Transactional
 	public Iterable<PlatoPedido> findAll() {
 		return platoPedidoRepository.findAll();
 	}
 	
-	@Transactional
 	public Optional<PlatoPedido> findById(Integer id) {
 		return platoPedidoRepository.findById(id);
 	}
 	
-	@Transactional
 	public int count() {
 		return (int) platoPedidoRepository.count();
 	}
@@ -54,7 +51,6 @@ public class PlatoPedidoService {
 		return platoPedidoRepository.save(pp);
 	}
 	
-	@Transactional
 	public Iterable<PlatoPedido> platosPedidosDesponibles() {
 		return platoPedidoRepository.platosPedidosDesponibles();
 	}

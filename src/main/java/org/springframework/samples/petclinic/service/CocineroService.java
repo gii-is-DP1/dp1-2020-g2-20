@@ -20,13 +20,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class CocineroService {
-	@Autowired
+	
 	private UserService userService;
-	@Autowired
 	private AuthoritiesService authoritiesService;
-	@Autowired
 	private CocineroRepository cocineroRepository;
 	
+	@Autowired
 	public CocineroService(UserService userService, AuthoritiesService authoritiesService,
 			CocineroRepository cocineroRepository) {
 		super();
@@ -35,12 +34,10 @@ public class CocineroService {
 		this.cocineroRepository = cocineroRepository;
 	}
 
-	@Transactional
 	public Iterable<Cocinero> findAll() {
 		return cocineroRepository.findAll();
 	}
 	
-	@Transactional
 	public Optional<Cocinero> findById(Integer id) {
 		return cocineroRepository.findById(id);
 	}
@@ -69,7 +66,7 @@ public class CocineroService {
 		log.info(String.format("Chef with username %s has been deleted", cocinero.getUsuario()));
 	}
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public Boolean cocineroConMismoUsuario(Cocinero cocinero ) throws DataAccessException {
 		Boolean res=false;
 		Integer cocineroId= cocinero.getId();
@@ -80,7 +77,7 @@ public class CocineroService {
 		return res;
 	}
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public BindingResult erroresSinMismoUser(Cocinero cocinero,BindingResult result) throws DataAccessException {
 		List<FieldError> errorsToKeep = result.getFieldErrors().stream()
                 .filter(fer -> !fer.getField().equals("usuario"))

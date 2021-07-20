@@ -13,45 +13,40 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class ProveedorService {
-	@Autowired
+	
 	private ProveedorRepository proveedorRepository;
 	
+	@Autowired
 	public ProveedorService(ProveedorRepository proveedorRepository) {
 		super();
 		this.proveedorRepository = proveedorRepository;
 	}
 
-	@Transactional
 	public Iterable<Proveedor> findAll(){
 		return proveedorRepository.findAll();
 	}
 	
-	@Transactional
 	public List<String> findAllNames(){
 		return proveedorRepository.findAllNames();
 	}
 	
-	@Transactional
 	public Optional<Proveedor> findById(Integer id) {
 		return proveedorRepository.findById(id);
 	}
 	
-	@Transactional
 	public Proveedor findByName(String nombre){
 		return (Proveedor) proveedorRepository.findByName(nombre);
 	}
 	
-	@Transactional
 	public Iterable<Proveedor> findActivos(){
 		return proveedorRepository.findByActivoTrue();
 	}
 	
-	@Transactional
 	public List<String> findActivosName(){
 		return proveedorRepository.findActivosName();
 	}
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public boolean esIgual(String nombre){
 		Proveedor proveedor = proveedorRepository.findByName(nombre);
 		if(proveedor==null) {

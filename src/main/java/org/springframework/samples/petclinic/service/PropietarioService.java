@@ -20,13 +20,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class PropietarioService {
-	@Autowired
+	
 	private PropietarioRepository propietarioRepository;
-	@Autowired
 	private AuthoritiesService authoritiesService;
-	@Autowired
 	private UserService userService;
 	
+	@Autowired
 	public PropietarioService(PropietarioRepository propietarioRepository, AuthoritiesService authoritiesService,
 			UserService userService) {
 		super();
@@ -35,17 +34,14 @@ public class PropietarioService {
 		this.userService = userService;
 	}
 
-	@Transactional
 	public Iterable<Propietario> findAll() {
 		return propietarioRepository.findAll();
 	}
 	
-	@Transactional
 	public Optional<Propietario> findById(Integer id) {
 		return propietarioRepository.findById(id);
 	}
 
-	@Transactional
 	public int count() {
 		return (int) propietarioRepository.count();
 	}
@@ -75,7 +71,7 @@ public class PropietarioService {
 		return propietarioRepository.save(propietario);
 	}
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public Boolean propietarioConMismoUsuario(Propietario propietario) throws DataAccessException {
 		Boolean res=false;
 		Integer propietarioId= propietario.getId();

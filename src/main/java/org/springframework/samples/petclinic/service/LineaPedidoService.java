@@ -16,35 +16,31 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class LineaPedidoService {
-	@Autowired
+	
 	private LineaPedidoRepository lineaPedidoRepository;
 	
+	@Autowired
 	public LineaPedidoService(LineaPedidoRepository lineaPedidoRepository) {
 		super();
 		this.lineaPedidoRepository = lineaPedidoRepository;
 	}
 
-	@Transactional
 	public Iterable<LineaPedido> findAll(){
 		return lineaPedidoRepository.findAll();
 	}
 	
-	@Transactional
 	public Optional<LineaPedido> findById(Integer id) {
 		return lineaPedidoRepository.findById(id);
 	}
 	
-	@Transactional
 	public Iterable<LineaPedido> findByProductoId(int productoID) {
 		return lineaPedidoRepository.findByProductoId(productoID);
 	}
 	
-	@Transactional
 	public Iterable<LineaPedido> findByPedidoId(int pedidoID) {
 		return lineaPedidoRepository.findByPedidoId(pedidoID);
 	}
 	
-	@Transactional
 	public int count() {
 		return (int) lineaPedidoRepository.count();	
 	}
