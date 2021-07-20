@@ -23,11 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping(value = "/cocinero")
 public class CocineroController {
-	@Autowired
+	
 	private CocineroService cocineroService;
-	@Autowired
 	private AuthoritiesService authoritiesService;
 	
+	@Autowired
 	public CocineroController(CocineroService cocineroService, AuthoritiesService authoritiesService) {
 		super();
 		this.cocineroService = cocineroService;
@@ -51,7 +51,6 @@ public class CocineroController {
 		modelMap.addAttribute("cocinero", cocinero);
 
 		return vista;
-
 	}
 
 	@GetMapping(path = "/new")
@@ -74,7 +73,6 @@ public class CocineroController {
 			vista = listadoCocinero(modelMap);
 		}
 		return vista;
-
 	}
 
 	@GetMapping(path = "/delete/{cocineroId}")

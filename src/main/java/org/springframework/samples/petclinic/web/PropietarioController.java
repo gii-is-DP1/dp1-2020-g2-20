@@ -24,11 +24,11 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping(value = "/propietarios")
 public class PropietarioController {
-	@Autowired
+
 	private PropietarioService propietarioService;
-	@Autowired
 	private AuthoritiesService authoritiesService;
 	
+	@Autowired
 	public PropietarioController(PropietarioService propietarioService, AuthoritiesService authoritiesService) {
 		super();
 		this.propietarioService = propietarioService;

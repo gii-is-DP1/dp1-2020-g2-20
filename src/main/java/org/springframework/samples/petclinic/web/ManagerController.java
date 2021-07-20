@@ -26,11 +26,11 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping(value = "/managers")
 public class ManagerController {
-	@Autowired
+	
 	private ManagerService managerService;
-	@Autowired
 	private AuthoritiesService authoritiesService;
 	
+	@Autowired
 	public ManagerController(ManagerService managerService, AuthoritiesService authoritiesService) {
 		super();
 		this.managerService = managerService;

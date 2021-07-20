@@ -30,13 +30,12 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping(value = "/platos")
 public class PlatoController {
-	@Autowired
+	
 	private PlatoService platoService;
-	@Autowired
 	private IngredienteService ingredienteService;
-	@Autowired
 	private ProductoService productoService;
 	
+	@Autowired
 	public PlatoController(PlatoService platoService, IngredienteService ingredienteService,
 			ProductoService productoService) {
 		super();

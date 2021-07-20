@@ -25,13 +25,12 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping(value = "/ingrediente")
 public class IngredienteController {
-	@Autowired
+	
 	private IngredienteService ingredienteService;
-	@Autowired
 	private ProductoFormatter productoFormatter;
-	@Autowired
 	private ProductoService productoService;
 	
+	@Autowired
 	public IngredienteController(IngredienteService ingredienteService, ProductoFormatter productoFormatter,
 			ProductoService productoService) {
 		super();

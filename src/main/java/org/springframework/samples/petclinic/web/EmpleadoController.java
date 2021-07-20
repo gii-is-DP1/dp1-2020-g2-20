@@ -12,7 +12,6 @@ public class EmpleadoController {
 	  @GetMapping()
 	  public String empleadoVista(ModelMap modelMap) {	   
 		  String vista= "empleados/empleados";
-		  
-	    return vista;
+		  return vista;
 	  }
 }

@@ -11,9 +11,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ProductoFormatter implements Formatter<Producto>{
-	@Autowired
+	
 	private ProductoService productoService;
 	
+	@Autowired
 	public ProductoFormatter(ProductoService productoService) {
 		super();
 		this.productoService = productoService;

@@ -25,11 +25,11 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping(value = "/camareros")
 public class CamareroController {
-	@Autowired
+	
 	private CamareroService camareroService;
-	@Autowired
 	private AuthoritiesService authoritiesService;
 	
+	@Autowired
 	public CamareroController(CamareroService camareroService, AuthoritiesService authoritiesService) {
 		super();
 		this.camareroService = camareroService;
@@ -98,10 +98,11 @@ public class CamareroController {
 	public String initUpdateCamareroForm(@PathVariable("camareroId") int camareroId, ModelMap model) {
 		String vista= "camareros/editarCamareros";
 		
-			Camarero cam =  camareroService.findById(camareroId).get();
-			model.addAttribute(cam);
-			return vista;
+		Camarero cam =  camareroService.findById(camareroId).get();
+		model.addAttribute(cam);
+		return vista;
 	}
+	
 	@PostMapping(value = "/edit")
 	public String processUpdateCamareroForm(@Valid Camarero camarero, BindingResult result,ModelMap modelMap) {
 		if(this.camareroService.CamareroConMismoUsuario(camarero)) {
@@ -113,7 +114,7 @@ public class CamareroController {
 			return "camareros/editarCamareros";
 		}else {
 			camareroService.save(camarero);
-		return "redirect:/camareros";
+			return "redirect:/camareros";
 		}
 	}
 }

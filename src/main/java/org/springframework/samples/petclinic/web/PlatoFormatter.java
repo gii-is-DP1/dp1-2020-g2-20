@@ -12,9 +12,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PlatoFormatter implements Formatter<Plato>{
-	@Autowired
+	
 	private PlatoService platoService;
 	
+	@Autowired
 	public PlatoFormatter(PlatoService platoService) {
 		super();
 		this.platoService = platoService;

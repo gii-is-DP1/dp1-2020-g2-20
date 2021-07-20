@@ -93,7 +93,6 @@ public class CamareroService {
 			res=true;
 		}
 		return res;
-		
 	}
 	
 	@Transactional
@@ -102,11 +101,10 @@ public class CamareroService {
                 .filter(fer -> !fer.getField().equals("usuario"))
                 .collect(Collectors.toList());
 		
-		 result = new BeanPropertyBindingResult(camarero, "camarero");
-
-	        for (FieldError fieldError : errorsToKeep) {
-	            result.addError(fieldError);
-	        }
-			return result;
+		result = new BeanPropertyBindingResult(camarero, "camarero");
+		for (FieldError fieldError : errorsToKeep) {
+			result.addError(fieldError);
+		}
+		return result;
 	}
 }

@@ -36,23 +36,17 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping(value = "/producto")
 public class ProductoController {
-	@Autowired
+	
 	private ProductoService productoService;
-	@Autowired 
 	private ProveedorService proveedorService;
-	@Autowired
 	private LineaPedidoService lineaPedidoService;
-	@Autowired
 	private TipoProductoService tipoProductoService;
-	@Autowired
 	private PedidoService pedidoService;
-	@Autowired
 	private ProductoConverter productoConverter;
-	@Autowired
 	private TipoProductoFormatter tipoProductoFormatter;
-	@Autowired
 	private ProveedorFormatter proveedorFormatter;
 	
+	@Autowired
 	public ProductoController(ProductoService productoService, ProveedorService proveedorService,
 			LineaPedidoService lineaPedidoService, TipoProductoService tipoProductoService, PedidoService pedidoService,
 			ProductoConverter productoConverter, TipoProductoFormatter tipoProductoFormatter,

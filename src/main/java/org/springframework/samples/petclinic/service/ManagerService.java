@@ -86,14 +86,14 @@ public class ManagerService {
 	@Transactional
 	public BindingResult erroresSinMismoUser(Manager manager,BindingResult result) throws DataAccessException {
 		List<FieldError> errorsToKeep = result.getFieldErrors().stream()
-                .filter(fer -> !fer.getField().equals("usuario"))
+				.filter(fer -> !fer.getField().equals("usuario"))
                 .collect(Collectors.toList());
 		
-		 result = new BeanPropertyBindingResult(manager, "manager");
+		result = new BeanPropertyBindingResult(manager, "manager");
 
-	        for (FieldError fieldError : errorsToKeep) {
-	            result.addError(fieldError);
-	        }
-			return result;
+		for (FieldError fieldError : errorsToKeep) {
+			result.addError(fieldError);
+		}
+		return result;
 	}
 }
