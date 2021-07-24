@@ -94,13 +94,10 @@ public class ComandaService {
 	}
 	
 	@Transactional
-	public Comanda crearComanda(Integer mesa, Principal user) {
-		Comanda comanda = new Comanda();
-		comanda.setMesa(mesa);
+	public Comanda instanciarComanda(Comanda comanda, Principal user) {
 		comanda.setFechaCreado(LocalDateTime.now());
 		comanda.setPrecioTotal(0.0);
 		comanda.setCamarero(camareroService.findByUser(user.getName()));
-		this.save(comanda);
 		return comanda;
 	}
 

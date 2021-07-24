@@ -12,6 +12,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 
+import org.springframework.samples.petclinic.validators.NumeroMesaConstraint;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,10 +21,10 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "comanda")
+@NumeroMesaConstraint
 public class Comanda extends BaseEntity{
 	
 	@Column(name = "mesa")
-	@Min(1)
 	private Integer mesa;
 	
 	@Column(name = "precio_total")
